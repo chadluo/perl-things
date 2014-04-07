@@ -8,16 +8,12 @@ layout: default
 {% endif %}
 <p id="tip-info">{{ page.date | date:"%B %e, %Y @ %I:%M %p" }}</p>
 {{ content }}
-<div class="pagination">
-  {% if paginator.previous_page %}
-  <a href="/page{{ paginator.previous_page }}" class="previous">Previous</a>
-  {% else %}
-  <span class="previous">Previous</span>
+
+<div id="post-nav" class="clearfix">
+  {% if paginator.previous_page_path %}
+  <a class="prev" href="{{page.previous.url}}">&laquo; {{page.previous.title}}</a>
   {% endif %}
-  <span class="page_number ">Page: {{ paginator.page }} of {{ paginator.total_pages }}</span>
-  {% if paginator.next_page %}
-  <a href="/page{{ paginator.next_page }}" class="next">Next</a>
-  {% else %}
-  <span class="next ">Next</span>
+  {% if paginator.next_page_path %}
+  <a class="next" href="{{page.next.url}}">{{page.next.title}} &raquo;</a>
   {% endif %}
 </div>

@@ -4,26 +4,26 @@ html, body {
   color: #111111;
   font-family: "Palatino Linotype", Calluna-Exljbris, Georgia, "Times New Roman", Times, serif; }
 
-div#main-wrap {
+#main-wrap {
   width: 38em;
-  margin: 1.5em auto; }
+  margin: 0 auto; }
 
-div#content {
+#content {
   margin: 1.5em 0em; }
 
-div#excerpt {
+#excerpt {
   display: none; }
 
 h1, h2, h3, h4, h5, h6 {
   font-weight: normal; }
 
-div.screenshot {
+.screenshot {
   text-align: center;
   margin-bottom: 1.5em; }
-  div.screenshot img {
+  .screenshot img {
     padding: 1em;
     background-color: #eee; }
-  div.screenshot img.force-border {
+  .screenshot img.force-border {
     padding: 0;
     border: 1px solid black; }
 
@@ -49,35 +49,37 @@ p code, li code {
   white-space: nowrap; }
 
 /* Header styles. */
-div#header h1 {
+#header {
+  margin: 3rem 0;
+}
+#header h1 {
   font-size: 3em;
   line-height: 1.125em;
   margin: 0;
   text-align: center; }
-  div#header h1 a {
+  #header h1 a {
     color: #111111;
     font-weight: normal;
     text-shadow: 0px 1px 1px #fff; }
-    div#header h1 a:hover {
+    #header h1 a:hover {
       text-decoration: none;
       color: #004065; }
 
-p#tagline {
+#tagline {
   color: #666666;
   text-align: center;
   margin: 0; }
 
 /* Navigtion styles. */
-p#navigation {
+#navigation {
   text-align: center;
   margin-bottom: 3em; }
 
 /* Footer styles. */
-div#footer {
+#footer {
   color: #666666;
   text-align: center;
-  margin-top: 3em;
-  margin-bottom: 6em; }
+  margin: 3em 0;
 
 /* Link styles. */
 a {
@@ -98,30 +100,30 @@ ol.tip-list {
       font-style: italic; }
 
 /* Tip page styles. */
-p#tip-info {
+#tip-info {
   color: #666666;
   font-style: italic;
   margin-top: -1.5em; }
 
-div#tip-comments {
+#tip-comments {
   margin-top: 3em; }
 
 /* Split pane styles. */
-div.split {
+.split {
   vertical-align: top;
   overflow: auto;
   width: 100%; }
-  div.split > div {
+  .split > div {
     width: 47.5%; }
-  div.split div.right {
+  .split .right {
     float: right; }
 
 /* Table of contents styles. */
-div.toc ul {
+.toc ul {
   list-style-type: none; }
-  div.toc ul:first-child > li {
+  .toc ul:first-child > li {
     margin-left: 0; }
 
 /* Screencast styles. */
-div.screencast {
+.screencast {
   text-align: center; }

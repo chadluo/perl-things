@@ -10,10 +10,10 @@ layout: default
 {{ content }}
 
 <div id="post-nav" class="clearfix">
-  {% if paginator.previous_page_path %}
-  <a class="prev" href="{{page.previous.url}}">&laquo; {{page.previous.title}}</a>
+  {% if page.previous %}
+  <a rel="prev" href="{{ page.previous.url }}">&larr; Older</a>
   {% endif %}
-  {% if paginator.next_page_path %}
-  <a class="next" href="{{page.next.url}}">{{page.next.title}} &raquo;</a>
+  {% if page.next %}
+  <a rel="next" href="{{ page.next.url }}">Newer &rarr;</a>
   {% endif %}
 </div>

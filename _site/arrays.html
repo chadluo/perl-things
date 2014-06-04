@@ -1,0 +1,247 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        
+        <title>Perl 程序员应该知道的事: 数组</title>
+        
+        <link rel="stylesheet" href="//ty.yukir.net/ty.css">
+        <link rel="stylesheet" type="text/css" href="css/syntax.css">
+        <link rel="stylesheet" type="text/css" href="css/hgtip/style.css">
+    </head>
+    <body>
+        <div id="main-wrap" class="ty ty-wide">
+            <div id="header">
+                <h1><a href="" title="Perl 程序员应该知道的事">Perl 程序员应该知道的事</a></h1>
+            </div>
+            <div id="content">
+                
+<h2><a href="http://perl101.org/arrays.html" title="External link">数组</a></h2>
+
+<p id="tip-info">October 25, 2013 @ 03:05 PM</p>
+<h3>简单创建单词数组</h3>
+
+<p><code>qw</code> 操作符使创建数组更容易。它意为将引用空白分成列表。</p>
+<div class="highlight"><pre><code class="language-perl" data-lang="perl"><span class="c1"># Perl 5</span>
+<span class="k">my</span> <span class="nv">@stooges</span> <span class="o">=</span> <span class="sx">qw( Larry Curly Moe Iggy )</span><span class="p">;</span>
+<span class="c1"># or</span>
+<span class="k">my</span> <span class="nv">@stooges</span> <span class="o">=</span> <span class="sx">qw(</span>
+<span class="sx">    Larry</span>
+<span class="sx">    Curly</span>
+<span class="sx">    Moe</span>
+<span class="sx">    Iggy</span>
+<span class="sx">)</span><span class="p">;</span>
+</code></pre></div>
+<p>在 Perl 6 中，<code>qw</code> 更简洁：</p>
+<div class="highlight"><pre><code class="language-perl" data-lang="perl"><span class="k">my</span> <span class="nv">@stooges</span> <span class="o">=</span> <span class="o">&lt;</span> <span class="n">Larry</span> <span class="n">Curly</span> <span class="n">Moe</span> <span class="n">Iggy</span> <span class="o">&gt;</span><span class="p">;</span>
+<span class="c1"># or</span>
+<span class="k">my</span> <span class="nv">@stooges</span> <span class="o">=</span> <span class="o">&lt;</span>
+    <span class="n">Larry</span>
+    <span class="n">Curly</span>
+    <span class="n">Moe</span>
+    <span class="n">Iggy</span>
+<span class="o">&gt;</span><span class="p">;</span>
+</code></pre></div>
+<p>元素不做内插：</p>
+<div class="highlight"><pre><code class="language-perl" data-lang="perl"><span class="k">my</span> <span class="nv">@array</span> <span class="o">=</span> <span class="sx">qw( $100,000 )</span><span class="p">;</span> <span class="c1"># Perl 5</span>
+<span class="k">my</span> <span class="nv">@array</span> <span class="o">=</span> <span class="o">&lt;</span> <span class="nv">$100</span><span class="p">,</span><span class="mo">000</span> <span class="o">&gt;</span><span class="p">;</span>   <span class="c1"># Perl 6</span>
+</code></pre></div>
+<p><code>@array</code> 的单一元素是“$100,000”。</p>
+
+<h3>利用数字值访问数组</h3>
+
+<p>要获得数组的单个标量，使用 <code>[]</code> 和 <code>$</code> 印记。在 Perl 中所有数组都从 0 开始。</p>
+<div class="highlight"><pre><code class="language-perl" data-lang="perl"><span class="nv">$stooges</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="c1"># Curly</span>
+</code></pre></div>
+<p>数组也能使用负偏移从尾端访问。</p>
+<div class="highlight"><pre><code class="language-perl" data-lang="perl"><span class="nv">$stooges</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="c1"># Iggy</span>
+</code></pre></div>
+<p>读取不存在的元素将得到 <code>undef</code>。</p>
+<div class="highlight"><pre><code class="language-perl" data-lang="perl"><span class="nv">$stooges</span><span class="p">[</span><span class="mi">47</span><span class="p">]</span> <span class="c1"># undef</span>
+</code></pre></div>
+<h3>数组的长度是标量值</h3>
+
+<p>将数组放到标量环境能得到其长度。一些人也喜欢直接使用 <code>scalar</code>。</p>
+<div class="highlight"><pre><code class="language-perl" data-lang="perl"><span class="k">my</span> <span class="nv">$stooge_count</span> <span class="o">=</span> <span class="nb">scalar</span> <span class="nv">@stooges</span><span class="p">;</span> <span class="c1"># 4</span>
+
+<span class="k">my</span> <span class="nv">$stooge_count</span> <span class="o">=</span> <span class="nv">@stooges</span><span class="p">;</span>        <span class="c1"># 4</span>
+</code></pre></div>
+<p>不要使用 <code>length</code> 来获得数组的长度。那只会得到字符串的长度。</p>
+<div class="highlight"><pre><code class="language-perl" data-lang="perl"><span class="k">my</span> <span class="nv">$moe_length</span> <span class="o">=</span> <span class="nb">length</span> <span class="nv">$stooges</span><span class="p">[</span><span class="nv">@stooges</span><span class="o">/</span><span class="mi">2</span><span class="p">];</span>
+                 <span class="nb">length</span> <span class="nv">$stooges</span><span class="p">[</span><span class="mi">2</span><span class="p">];</span>
+                 <span class="nb">length</span> <span class="s">&#39;Moe&#39;</span><span class="p">;</span>
+                 <span class="mi">3</span><span class="p">;</span>
+</code></pre></div>
+<h3>数组没有边界</h3>
+
+<p>数组没有任何有限的大小，且不必预先声明。数组按需更改其大小。</p>
+
+<p>数组也不稀疏。下列代码创建 10,000 个元素的数组。</p>
+<div class="highlight"><pre><code class="language-perl" data-lang="perl"><span class="k">my</span> <span class="nv">@array</span>     <span class="o">=</span> <span class="p">();</span>
+<span class="nv">$array</span><span class="p">[</span><span class="mi">10000</span><span class="p">]</span> <span class="o">=</span> <span class="s">&#39;x&#39;</span><span class="p">;</span>
+</code></pre></div>
+<p><em>@array</em> 现在具有 10,001 个元素（0-10,000）。它只填入了一个，其他 10,000
+个都是 <code>undef</code>。</p>
+
+<h3>数组会平展，但不会嵌套</h3>
+
+<p>不像 PHP，当数组合并时会平展开为一个大列表。</p>
+<div class="highlight"><pre><code class="language-perl" data-lang="perl"><span class="k">my</span> <span class="nv">@sandwich</span>       <span class="o">=</span> <span class="p">(</span> <span class="s">&#39;PB&#39;</span><span class="p">,</span> <span class="s">&#39;J&#39;</span> <span class="p">);</span>
+<span class="k">my</span> <span class="nv">@other_sandwich</span> <span class="o">=</span> <span class="p">(</span> <span class="s">&#39;B&#39;</span><span class="p">,</span> <span class="s">&#39;L&#39;</span><span class="p">,</span> <span class="s">&#39;T&#39;</span> <span class="p">);</span>
+<span class="k">my</span> <span class="nv">@ingredients</span>    <span class="o">=</span> <span class="p">(</span> <span class="nv">@other_sandwich</span><span class="p">,</span> <span class="nv">@sandwich</span> <span class="p">);</span>
+<span class="c1"># ( &#39;B&#39;, &#39;L&#39;, &#39;T&#39;, &#39;PB&#39;, &#39;J&#39; )</span>
+</code></pre></div>
+<p>这意味着你不能将一个数组包含到另一个数组或哈希中。那样的话，你将需要使用引用。</p>
+
+<h3>列表能带扩展的逗号（,）</h3>
+
+<p>Perl 最好的特性之一是在列表的尾端能带一个扩展的逗号。例如：</p>
+<div class="highlight"><pre><code class="language-perl" data-lang="perl"><span class="k">my</span> <span class="nv">@array</span> <span class="o">=</span> <span class="p">(</span>
+    <span class="s">&#39;This thing&#39;</span><span class="p">,</span>
+    <span class="s">&#39;That thing&#39;</span><span class="p">,</span>
+<span class="p">);</span>
+</code></pre></div>
+<p>当你编辑代码时，这使添加或者删除项目十分容易，因为你无需将最后一个项目作为特殊情况处理。</p>
+<div class="highlight"><pre><code class="language-perl" data-lang="perl"><span class="k">my</span> <span class="nv">@array</span> <span class="o">=</span> <span class="p">(</span>
+    <span class="s">&#39;This thing&#39;</span><span class="p">,</span>
+    <span class="s">&#39;That thing&#39;</span><span class="p">,</span>
+    <span class="s">&#39;The other thing&#39;</span><span class="p">,</span>
+<span class="p">);</span>
+</code></pre></div>
+<h3>像队列和堆栈一样使用数组</h3>
+
+<p><code>shift</code> 从数组开头移除元素。</p>
+<div class="highlight"><pre><code class="language-perl" data-lang="perl"><span class="k">my</span> <span class="nv">$next_customer</span> <span class="o">=</span> <span class="nb">shift</span> <span class="nv">@customers</span><span class="p">;</span>
+</code></pre></div>
+<p><code>unshift</code> 将元素添加到数组的开头。</p>
+<div class="highlight"><pre><code class="language-perl" data-lang="perl"><span class="nb">unshift</span> <span class="nv">@customers</span><span class="p">,</span> <span class="nv">$line_jumper</span><span class="p">;</span>
+</code></pre></div>
+<p><code>push</code> 将元素添加到数组的结尾。</p>
+<div class="highlight"><pre><code class="language-perl" data-lang="perl"><span class="nb">push</span> <span class="nv">@customers</span><span class="p">,</span> <span class="nv">$dio</span><span class="p">;</span> <span class="c1"># The last in line</span>
+</code></pre></div>
+<p><code>pop</code> 从数组的结尾移除元素。</p>
+<div class="highlight"><pre><code class="language-perl" data-lang="perl"><span class="k">my</span> <span class="nv">$went_home</span> <span class="o">=</span> <span class="nb">pop</span> <span class="nv">@customers</span><span class="p">;</span>
+</code></pre></div>
+<h3>利用数组分片提取数组的部分元素</h3>
+
+<p>数组分片只是使用多个索引访问数组。</p>
+<div class="highlight"><pre><code class="language-perl" data-lang="perl"><span class="k">my</span> <span class="nv">@a</span> <span class="o">=</span> <span class="s">&#39;a&#39;</span><span class="o">..</span><span class="s">&#39;z&#39;</span><span class="p">;</span> <span class="c1"># 26 letters</span>
+
+<span class="c1"># a, e, i, o, u...</span>
+<span class="k">my</span> <span class="nv">@vowels</span> <span class="o">=</span> <span class="nv">@a</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span><span class="mi">4</span><span class="p">,</span><span class="mi">8</span><span class="p">,</span><span class="mi">14</span><span class="p">,</span><span class="mi">20</span><span class="p">];</span>
+
+<span class="c1"># And sometimes &quot;y&quot;</span>
+<span class="nb">push</span><span class="p">(</span> <span class="nv">@vowels</span><span class="p">,</span> <span class="nv">$a</span><span class="p">[</span><span class="o">-</span><span class="mi">2</span><span class="p">]</span> <span class="p">)</span> <span class="k">if</span> <span class="nb">rand</span> <span class="o">&gt;</span> <span class="mf">.5</span><span class="p">;</span>
+</code></pre></div>
+<p>注意：当访问数组分片时，印记是 <code>@</code>，不是
+<code>$</code>。因为你返回的是数组，而不是标量。新手常范的错误是使用 <code>@</code> 印记而不是 <code>$</code>
+访问一个数组元素。那将返回分片，实则是列表。</p>
+<div class="highlight"><pre><code class="language-perl" data-lang="perl"><span class="c1"># WRONG: Returns a 1-element list, or 1 in scalar context</span>
+<span class="k">my</span> <span class="nv">$z</span> <span class="o">=</span> <span class="nv">@a</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">];</span>
+
+<span class="c1"># RIGHT: Returns a single scalar element</span>
+<span class="k">my</span> <span class="nv">$z</span> <span class="o">=</span> <span class="nv">$a</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">];</span>
+</code></pre></div>
+<h3>利用数组分片来分配数组块</h3>
+
+<p>你能够将数组分片作为左值（<em>lvalues</em>），即能赋值给等号左边的值。</p>
+<div class="highlight"><pre><code class="language-perl" data-lang="perl"><span class="c1"># Replace vowels with uppercase versions</span>
+<span class="nv">@a</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span><span class="mi">4</span><span class="p">,</span><span class="mi">8</span><span class="p">,</span><span class="mi">14</span><span class="p">,</span><span class="mi">20</span><span class="p">]</span> <span class="o">=</span> <span class="sx">qw( A E I O U )</span><span class="p">;</span>
+
+<span class="c1"># Swap first and last elements</span>
+<span class="nv">@a</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="nv">@a</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span><span class="mi">0</span><span class="p">];</span>
+</code></pre></div>
+<p>注意：分片的左边和右边大小必须相同。在等号右边缺少的值将使用 <code>undef</code> 换掉。</p>
+
+<h3>利用 <code>splice</code> 就地修改数组</h3>
+
+<p><code>splice</code>
+让你拼接数组为另一个数组。让我们来看几个常见的错误做法，那应该能说明它的有用性。</p>
+<div class="highlight"><pre><code class="language-perl" data-lang="perl"><span class="k">my</span> <span class="nv">@a</span> <span class="o">=</span> <span class="sx">qw(Steve Stu Stan)</span><span class="p">;</span>
+<span class="nv">$a</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="s">&#39;Stewart&#39;</span><span class="p">,</span> <span class="s">&#39;Zane&#39;</span><span class="p">];</span>
+<span class="c1"># @a  = (&#39;Steve&#39;, ARRAY(0x841214c), &#39;Stan&#39;)</span>
+<span class="c1"># Memory address to an array reference</span>
+
+<span class="k">my</span> <span class="nv">@a</span> <span class="o">=</span> <span class="sx">qw(Steve Stu Stan)</span><span class="p">;</span>
+<span class="k">my</span> <span class="nv">@b</span> <span class="o">=</span> <span class="sx">qw(Stewart Zane)</span><span class="p">;</span>
+<span class="nv">$a</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="nv">@b</span><span class="p">;</span>
+<span class="c1"># @a  = (&#39;Steve&#39;, 2, &#39;Stan&#39;)</span>
+<span class="c1"># Returns a scalar reference, the length of @b</span>
+</code></pre></div>
+<p>现在使用 <code>splice</code>：</p>
+<div class="highlight"><pre><code class="language-perl" data-lang="perl"><span class="nv">@a</span> <span class="o">=</span> <span class="sx">qw(Steve Stu Stan)</span><span class="p">;</span>
+<span class="nb">splice</span> <span class="nv">@a</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="s">&#39;Stewart&#39;</span><span class="p">,</span> <span class="s">&#39;Zane&#39;</span><span class="p">;</span>
+<span class="c1"># @a = (&#39;Steve&#39;, &#39;Stewart&#39;, &#39;Zane&#39;, &#39;Stan&#39;) </span>
+<span class="c1"># This is just what we wanted</span>
+</code></pre></div>
+<p>让我们分解 <code>splice</code> 的参数列表：首先，我们命名要操作的数组（@a）；
+其次，我们定义偏移（离我们想拼接的列表开始有多远）；第三，我们指定
+拼接的长度；最后，我们列出想要插入的项目。</p>
+
+<p>如果遇到错误，那么通过 <code>perldoc -f splice</code> 来了解详情。</p>
+
+<h3>利用 <code>map</code> 处理数组</h3>
+
+<p><code>map</code> 本质上是返回列表的 <code>foreach</code> 循环。</p>
+
+<p>你可以使用它将数组转换成哈希：</p>
+<div class="highlight"><pre><code class="language-perl" data-lang="perl"><span class="k">my</span> <span class="nv">@array</span> <span class="o">=</span> <span class="p">(</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">5</span> <span class="p">);</span>
+<span class="k">my</span> <span class="nv">%hash</span>  <span class="o">=</span> <span class="nb">map</span> <span class="p">{</span> <span class="nv">$_</span> <span class="o">=&gt;</span> <span class="nv">$_</span> <span class="o">*</span> <span class="mi">9</span> <span class="p">}</span> <span class="nv">@array</span><span class="p">;</span>
+<span class="c1"># %hash   = ( 1 =&gt; 9, 2 =&gt; 18, 3 =&gt; 27, 4 =&gt; 36, 5 =&gt; 45 )</span>
+</code></pre></div>
+<p>或者变成列表：</p>
+<div class="highlight"><pre><code class="language-perl" data-lang="perl"><span class="k">my</span> <span class="nv">@array</span>       <span class="o">=</span> <span class="p">(</span> <span class="s">&#39;ReD&#39;</span><span class="p">,</span> <span class="s">&#39;bLue&#39;</span><span class="p">,</span> <span class="s">&#39;GrEEN&#39;</span> <span class="p">);</span>
+<span class="k">my</span> <span class="nv">@fixed_array</span> <span class="o">=</span> <span class="nb">map</span><span class="p">(</span><span class="nb">ucfirst</span><span class="p">,</span> <span class="nb">map</span><span class="p">(</span><span class="nb">lc</span><span class="p">,</span> <span class="nv">@array</span><span class="p">));</span> <span class="c1"># note the nested &#39;map&#39; functions</span>
+<span class="c1"># @fixed_array  = ( &#39;Red&#39;, &#39;Blue&#39;, &#39;Green&#39; )</span>
+</code></pre></div>
+<p>注意：如果你修改 <code>$_</code>，源数据也会被修改。这样，上例可以修改成：</p>
+<div class="highlight"><pre><code class="language-perl" data-lang="perl"><span class="k">my</span> <span class="nv">@array</span> <span class="o">=</span> <span class="p">(</span> <span class="s">&#39;ReD&#39;</span><span class="p">,</span> <span class="s">&#39;bLue&#39;</span><span class="p">,</span> <span class="s">&#39;GrEEN&#39;</span> <span class="p">);</span>
+<span class="nb">map</span> <span class="p">{</span> <span class="nv">$_</span> <span class="o">=</span> <span class="nb">ucfirst</span> <span class="nb">lc</span> <span class="nv">$_</span> <span class="p">}</span> <span class="nv">@array</span><span class="p">;</span>
+<span class="c1"># @array = ( &#39;Red&#39;, &#39;Blue&#39;, &#39;Green&#39; )</span>
+</code></pre></div>
+<h3>利用 <code>grep</code> 从数组选择项目</h3>
+
+<p><code>grep</code> 本质上也是返回列表的 <code>foreach</code> 循环。但它不像
+<code>map</code>，它只返回导致条件为真的元素。</p>
+<div class="highlight"><pre><code class="language-perl" data-lang="perl"><span class="k">my</span> <span class="nv">@array</span>     <span class="o">=</span> <span class="p">(</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">5</span> <span class="p">);</span>
+<span class="k">my</span> <span class="nv">@new_array</span> <span class="o">=</span> <span class="nb">grep</span> <span class="p">{</span> <span class="nv">$_</span> <span class="o">*</span> <span class="mi">9</span> <span class="p">}</span> <span class="nv">@array</span><span class="p">;</span>
+<span class="c1"># @new_array  = ( 1, 2, 3, 4, 5 );</span>
+</code></pre></div>
+<p>它也将如 <code>map</code> 一样修改源数据：</p>
+<div class="highlight"><pre><code class="language-perl" data-lang="perl"><span class="k">my</span> <span class="nv">@array</span>     <span class="o">=</span> <span class="p">(</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">5</span> <span class="p">);</span>
+<span class="k">my</span> <span class="nv">@new_array</span> <span class="o">=</span> <span class="nb">grep</span> <span class="p">{</span> <span class="nv">$_</span> <span class="o">*=</span> <span class="mi">9</span> <span class="p">}</span> <span class="nv">@array</span><span class="p">;</span>
+<span class="c1"># @array      = ( 0, 9, 18, 27, 36, 45 );</span>
+<span class="c1"># @new_array  = ( 9, 18, 27, 36, 45 );</span>
+</code></pre></div>
+<p>我们也可以传递正则表达式给 <code>grep</code>。在本例中，我们只想把包含 <em>Doe</em>
+的人放到新数组：</p>
+<div class="highlight"><pre><code class="language-perl" data-lang="perl"><span class="k">my</span> <span class="nv">@people</span> <span class="o">=</span> <span class="p">(</span>
+    <span class="s">&#39;John Doe&#39;</span><span class="p">,</span>
+    <span class="s">&#39;Jane Doe&#39;</span><span class="p">,</span>
+    <span class="s">&#39;Joe Sixpack&#39;</span><span class="p">,</span>
+    <span class="s">&#39;John Q. Public&#39;</span><span class="p">,</span>
+<span class="p">);</span>
+
+<span class="k">my</span> <span class="nv">@does</span> <span class="o">=</span> <span class="nb">grep</span> <span class="p">{</span> <span class="nv">$_</span> <span class="o">=~</span><span class="sr"> /\bDoe$/</span> <span class="p">}</span> <span class="nv">@people</span><span class="p">;</span>
+<span class="c1"># @does  = (&#39;John Doe&#39;, &#39;Jane Doe&#39;);</span>
+</code></pre></div>
+<p>或更短的：</p>
+<div class="highlight"><pre><code class="language-perl" data-lang="perl"><span class="k">my</span> <span class="nv">@does</span> <span class="o">=</span> <span class="nb">grep</span> <span class="p">{</span> <span class="sr">/\bDoe$/</span> <span class="p">}</span> <span class="nv">@people</span><span class="p">;</span>
+</code></pre></div>
+
+<div id="post-nav" class="clearfix">
+  
+  <a rel="prev" href="/numbers.html">&larr;数字</a>
+  
+  
+  <a rel="next" href="/hashes.html" style="float:right;">哈希&rarr;</a>
+  
+</div>
+
+            </div>
+            <div id="footer">
+                follow me: <a href="https://twitter.com/xuxiaodong">twitter</a> / <a href="https://github.com/xuxiaodong">github</a> / <a href="http://www.linkedin.com/pub/xiaodong-xu/62/319/7">linkedin</a>
+            </div>
+        </div>
+    </body>
+</html>

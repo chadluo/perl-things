@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        
+        <title>Perl 程序员应该知道的事: 模块</title>
+        
+        <link rel="stylesheet" href="//ty.yukir.net/ty.css">
+        <link rel="stylesheet" type="text/css" href="css/syntax.css">
+        <link rel="stylesheet" type="text/css" href="css/hgtip/style.css">
+    </head>
+    <body>
+        <div id="main-wrap" class="ty ty-wide">
+            <div id="header">
+                <h1><a href="" title="Perl 程序员应该知道的事">Perl 程序员应该知道的事</a></h1>
+            </div>
+            <div id="content">
+                
+<h2><a href="http://perl101.org/modules.html" title="External link">模块</a></h2>
+
+<p id="tip-info">October 28, 2013 @ 10:13 AM</p>
+<h3>利用 <code>use lib</code> 在非标准位置搜索模块</h3>
+
+<p>要搜索没有安装到 <code>@INC</code> 所指定路径的模块，使用 <code>lib</code> 编译指令：</p>
+<div class="highlight"><pre><code class="language-perl" data-lang="perl"><span class="k">use</span> <span class="n">lib</span> <span class="s">&#39;/home/andy/private-lib/&#39;</span><span class="p">;</span>
+<span class="k">use</span> <span class="nn">Magic::</span><span class="n">Foo</span><span class="p">;</span>
+</code></pre></div>
+<p>注意：<code>use lib</code> 必须置于试图使用 <code>Magic::Foo</code> 之前。</p>
+
+<h3>利用 Module::Starter 创建新模块</h3>
+
+<p><a href="https://metacpan.org/module/Module::Starter">Module::Starter</a> 及其命令行工具 <code>module-starter</code> 创建模块发行套件的基本
+框架，以便发布到 CPAN 上。它包含基本的代码布局、POD 指令、文档片断、基本
+测试、<code>Makefile.PL</code> 和 <code>MANIFEST</code> 文件、以及 <code>README</code> 和 <code>Changes</code> 记录
+的开头。</p>
+<div class="highlight"><pre><code class="language-text" data-lang="text">$ module-starter --module=Magic::Foo --module=Magic::Foo::Internals \
+    --author=&quot;Andy Lester&quot; --email=&quot;andy@perl.org&quot; --verbose
+Created Magic-Foo
+Created Magic-Foo/lib/Magic
+Created Magic-Foo/lib/Magic/Foo.pm
+Created Magic-Foo/lib/Magic/Foo
+Created Magic-Foo/lib/Magic/Foo/Internals.pm
+Created Magic-Foo/t
+Created Magic-Foo/t/pod-coverage.t
+Created Magic-Foo/t/pod.t
+Created Magic-Foo/t/boilerplate.t
+Created Magic-Foo/t/00-load.t
+Created Magic-Foo/.cvsignore
+Created Magic-Foo/Makefile.PL
+Created Magic-Foo/Changes
+Created Magic-Foo/README
+Created Magic-Foo/MANIFEST
+Created starter directories and files
+</code></pre></div>
+<h3>利用 <code>h2xs</code> 创建 XS 模块</h3>
+
+<p>如果你想创建 XS 模块，即 Perl 代码与外部 C 代码的接口，那么你将需要使用
+原始的模块开始工具 <code>h2xs</code>。<code>h2xs</code> 已包含到每个 Perl 发行中，但它可能并没
+有 <code>Module::Starter</code> 那么新。除非你需要 XS 代码，否则使用 <code>Module::Starter</code>。</p>
+
+<h3>利用 Dist::Zilla 创建、打包及发行模块</h3>
+
+<p><a href="https://metacpan.org/module/Dist::Zilla">Dist::Zilla</a> 是一个相当好用的 Perl 模块，它使创建、打包、以及发行
+模块的过程变得十分容易。如果你打算将编写的模块发布到 CPAN 上，那么使用
+Dist::Zilla 将为你节省许多时间。</p>
+
+<h4>初始化 Dist::Zilla 配置</h4>
+
+<p>安装 Dist::Zilla 之后的第一件事就是初始化其配置：</p>
+<div class="highlight"><pre><code class="language-text" data-lang="text">$ dzil setup
+</code></pre></div>
+<p>根据向导提供你的姓名、Email、选择版权许可、以及 PAUSE 帐号（发布模块
+到 CPAN 时需要）即可。</p>
+
+<p>Dist::Zilla 默认将配置文件保存在 <code>~/.dzil/config.ini</code> 文件中，所以后续
+你也可以通过修改此文件来变更相应信息。</p>
+
+<h4>创建模块</h4>
+
+<p>执行以下命令可以创建一个新的模块，如 Foo::Bar：</p>
+<div class="highlight"><pre><code class="language-text" data-lang="text">$ dzil new Foo::Bar
+
+[DZ] making target dir /home/xiaodong/code/Foo-Bar
+[DZ] writing files to /home/xiaodong/code/Foo-Bar
+[DZ] dist minted in ./Foo-Bar
+</code></pre></div>
+<p>这将创建如下目录结构及文件：</p>
+<div class="highlight"><pre><code class="language-text" data-lang="text">Foo-Bar
+├── dist.ini
+└── lib
+    └── Foo
+            └── Bar.pm
+</code></pre></div>
+<p>其中，<code>dist.ini</code> 为该模块的配置文件，<code>Bar.pm</code> 为模块源文件。</p>
+
+<h4>打包模块</h4>
+
+<p>待模块编写完毕，你就可以将模块打包了：</p>
+<div class="highlight"><pre><code class="language-text" data-lang="text">$ dzil build
+
+[DZ] beginning to build WebService-TaobaoIP
+[DZ] guessing dist&#39;s main_module is lib/WebService/TaobaoIP.pm
+[DZ] extracting distribution abstract from lib/WebService/TaobaoIP.pm
+[DZ] writing WebService-TaobaoIP in WebService-TaobaoIP-0.03
+defined(@array) is deprecated at /usr/share/perl5/Log/Log4perl/Config.pm line
+864.
+    (Maybe you should just omit the defined()?)
+[DZ] building archive with Archive::Tar::Wrapper
+[DZ] writing archive to WebService-TaobaoIP-0.03.tar.gz
+</code></pre></div>
+<p>执行该命令后，模块就会被打包成 <code>.tar.gz</code> 格式。</p>
+
+<h4>发布模块</h4>
+
+<p>如果你要将模块发布到 CPAN 上，只需执行：</p>
+<div class="highlight"><pre><code class="language-text" data-lang="text">$ dzil release
+
+[DZ] beginning to build WebService-TaobaoIP
+[DZ] guessing dist&#39;s main_module is lib/WebService/TaobaoIP.pm
+[DZ] extracting distribution abstract from lib/WebService/TaobaoIP.pm
+[DZ] writing WebService-TaobaoIP in WebService-TaobaoIP-0.03
+defined(@array) is deprecated at /usr/share/perl5/Log/Log4perl/Config.pm line
+864.
+    (Maybe you should just omit the defined()?)
+[DZ] building archive with Archive::Tar::Wrapper
+[DZ] writing archive to WebService-TaobaoIP-0.03.tar.gz
+[@Basic/TestRelease] Extracting
+/home/xiaodong/code/WebService-TaobaoIP/WebService-TaobaoIP-0.03.tar.gz
+to .build/x8WYcGBWoY
+Checking if your kit is complete...
+Looks good
+Writing Makefile for WebService::TaobaoIP
+Writing MYMETA.yml and MYMETA.json
+cp lib/WebService/TaobaoIP.pm blib/lib/WebService/TaobaoIP.pm
+Manifying blib/man3/WebService::TaobaoIP.3pm
+No tests defined for WebService::TaobaoIP extension.
+[@Basic/TestRelease] all&#39;s well; removing .build/x8WYcGBWoY
+*** Preparing to release WebService-TaobaoIP-0.03.tar.gz with
+@Basic/UploadToCPAN ***
+
+Do you want to continue the release process? [y/N]: N
+</code></pre></div>
+<p>根据提示，回答 <code>y</code> 将发布模块，<code>N</code> 将终止发布过程。</p>
+
+<h4>其他功能</h4>
+
+<p>Dist::Zilla 不愧为一站式工具，除上述基本功能之外，还包括添加模块到现有
+发行、执行测试、列出模块依赖等特性。</p>
+
+<p>有关 Dist::Zilla 的更多用法，可参考其<a href="http://dzil.org/tutorial/contents.html">官方文档</a>。</p>
+
+
+<div id="post-nav" class="clearfix">
+  
+  <a rel="prev" href="/debugging.html">&larr;调试</a>
+  
+  
+  <a rel="next" href="/external-programs.html" style="float:right;">外部程序&rarr;</a>
+  
+</div>
+
+            </div>
+            <div id="footer">
+                follow me: <a href="https://twitter.com/xuxiaodong">twitter</a> / <a href="https://github.com/xuxiaodong">github</a> / <a href="http://www.linkedin.com/pub/xiaodong-xu/62/319/7">linkedin</a>
+            </div>
+        </div>
+    </body>
+</html>

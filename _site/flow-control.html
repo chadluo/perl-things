@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        
+        <title>Perl 程序员应该知道的事: 流程控制</title>
+        
+        <link rel="stylesheet" href="//ty.yukir.net/ty.css">
+        <link rel="stylesheet" type="text/css" href="css/syntax.css">
+        <link rel="stylesheet" type="text/css" href="css/hgtip/style.css">
+    </head>
+    <body>
+        <div id="main-wrap" class="ty ty-wide">
+            <div id="header">
+                <h1><a href="" title="Perl 程序员应该知道的事">Perl 程序员应该知道的事</a></h1>
+            </div>
+            <div id="content">
+                
+<h2><a href="http://perl101.org/flow-control.html" title="External link">流程控制</a></h2>
+
+<p id="tip-info">October 26, 2013 @ 04:55 PM</p>
+<h3>四个假值</h3>
+
+<p>在 Perl 中有 4 种假值：</p>
+<div class="highlight"><pre><code class="language-perl" data-lang="perl"><span class="k">my</span>  <span class="nv">$false</span> <span class="o">=</span> <span class="nb">undef</span><span class="p">;</span>
+    <span class="nv">$false</span> <span class="o">=</span> <span class="s">&quot;&quot;</span><span class="p">;</span>
+    <span class="nv">$false</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+    <span class="nv">$false</span> <span class="o">=</span> <span class="s">&quot;0&quot;</span><span class="p">;</span>
+</code></pre></div>
+<p>最后一个为假值是因为 <code>&quot;0&quot;</code> 在数字上下文中将变成 0，根据第三条规则，
+它是假值。</p>
+
+<h3>后缀控制</h3>
+
+<p>简单的 <code>if</code> 或 <code>unless</code> 块可能看起来像这样：</p>
+<div class="highlight"><pre><code class="language-perl" data-lang="perl"><span class="k">if</span> <span class="p">(</span><span class="nv">$is_frobnitz</span><span class="p">)</span> <span class="p">{</span>
+    <span class="k">print</span> <span class="s">&quot;FROBNITZ DETECTED!\n&quot;</span><span class="p">;</span>
+<span class="p">}</span>
+</code></pre></div>
+<p>在这些情况下，<code>if</code> 或 <code>unless</code> 能够追加到简单语句的尾部。</p>
+<div class="highlight"><pre><code class="language-perl" data-lang="perl"><span class="k">print</span> <span class="s">&quot;FROBNITZ DETECTED!\n&quot;</span> <span class="k">if</span> <span class="nv">$is_frobnitz</span><span class="p">;</span>
+<span class="nb">die</span> <span class="s">&quot;BAILING ON FROBNITZ!\n&quot;</span> <span class="k">unless</span> <span class="nv">$deal_with_frobnitz</span><span class="p">;</span>
+</code></pre></div>
+<p><code>while</code> 和 <code>for</code> 也可以这样用。</p>
+<div class="highlight"><pre><code class="language-perl" data-lang="perl"><span class="k">print</span> <span class="nv">$i</span><span class="o">++</span> <span class="o">.</span> <span class="s">&quot;\n&quot;</span> <span class="k">while</span> <span class="nv">$i</span> <span class="o">&lt;</span> <span class="mi">10</span><span class="p">;</span>
+</code></pre></div>
+<h3><code>for</code> 循环</h3>
+
+<p><code>for</code> 循环有三种风格。</p>
+<div class="highlight"><pre><code class="language-perl" data-lang="perl"><span class="k">my</span> <span class="nv">@array</span><span class="p">;</span>
+
+<span class="c1"># Old style C for loops</span>
+<span class="k">for</span> <span class="p">(</span><span class="k">my</span> <span class="nv">$i</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="nv">$i</span> <span class="o">&lt;</span> <span class="mi">10</span><span class="p">;</span> <span class="nv">$i</span><span class="o">++</span><span class="p">)</span> <span class="p">{</span>
+    <span class="nv">$array</span><span class="p">[</span><span class="nv">$i</span><span class="p">]</span> <span class="o">=</span> <span class="nv">$i</span><span class="p">;</span>
+<span class="p">}</span>
+
+<span class="c1"># Iterating loops</span>
+<span class="k">for</span> <span class="k">my</span> <span class="nv">$i</span> <span class="p">(</span><span class="nv">@array</span><span class="p">)</span> <span class="p">{</span>
+    <span class="k">print</span> <span class="s">&quot;$i\n&quot;</span><span class="p">;</span>
+<span class="p">}</span>
+
+<span class="c1"># Postfix for loops</span>
+<span class="k">print</span> <span class="s">&quot;$_\n&quot;</span> <span class="k">for</span> <span class="nv">@array</span><span class="p">;</span>
+</code></pre></div>
+<p>你也许会看到 <code>foreach</code> 用于 <code>for</code> 的位置。它们两个可以互换。在上述后
+两种循环风格中多数人使用 <code>foreach</code>。</p>
+
+<h3><code>do</code> 块</h3>
+
+<p><code>do</code> 允许 Perl 在期待语句的位置使用块。</p>
+<div class="highlight"><pre><code class="language-perl" data-lang="perl"><span class="nb">open</span><span class="p">(</span> <span class="k">my</span> <span class="nv">$file</span><span class="p">,</span> <span class="s">&#39;&lt;&#39;</span><span class="p">,</span> <span class="nv">$filename</span> <span class="p">)</span> <span class="ow">or</span> <span class="nb">die</span> <span class="s">&quot;Can&#39;t open $filename: $!&quot;</span>
+</code></pre></div>
+<p>但如果你需要做别的事：</p>
+<div class="highlight"><pre><code class="language-perl" data-lang="perl"><span class="nb">open</span><span class="p">(</span> <span class="k">my</span> <span class="nv">$file</span><span class="p">,</span> <span class="s">&#39;&lt;&#39;</span><span class="p">,</span> <span class="nv">$filename</span> <span class="p">)</span> <span class="ow">or</span> <span class="k">do</span> <span class="p">{</span>
+    <span class="n">close_open_data_source</span><span class="p">();</span>
+    <span class="nb">die</span> <span class="s">&quot;Aborting: Can&#39;t open $filename: $!\n&quot;</span><span class="p">;</span>
+<span class="p">};</span>
+</code></pre></div>
+<p>下列代码也是等价的：</p>
+<div class="highlight"><pre><code class="language-perl" data-lang="perl"><span class="k">if</span> <span class="p">(</span><span class="nv">$condition</span><span class="p">)</span> <span class="p">{</span> <span class="n">action</span><span class="p">();</span> <span class="p">}</span>
+<span class="k">do</span> <span class="p">{</span> <span class="n">action</span><span class="p">();</span> <span class="p">}</span> <span class="k">if</span> <span class="nv">$condition</span><span class="p">;</span>
+</code></pre></div>
+<p>作为特殊情况，<code>while</code> 至少执行块一次。</p>
+<div class="highlight"><pre><code class="language-perl" data-lang="perl"><span class="k">do</span> <span class="p">{</span> <span class="n">action</span><span class="p">();</span> <span class="p">}</span> <span class="k">while</span> <span class="n">action_needed</span><span class="p">;</span>
+</code></pre></div>
+<h3>Perl 没有 <code>switch</code> 或 <code>case</code></h3>
+
+<p>如果你从其他语言而来，你可能用过 <code>case</code> 语句。Perl 没有它们。</p>
+
+<p>最接近的我们有 <code>elsif</code>：</p>
+<div class="highlight"><pre><code class="language-perl" data-lang="perl"><span class="k">if</span> <span class="p">(</span><span class="nv">$condition_one</span><span class="p">)</span> <span class="p">{</span> 
+    <span class="n">action_one</span><span class="p">();</span>
+<span class="p">}</span>
+<span class="k">elsif</span> <span class="p">(</span><span class="nv">$condition_two</span><span class="p">)</span> <span class="p">{</span>
+    <span class="n">action_two</span><span class="p">();</span>
+<span class="p">}</span>
+<span class="o">...</span>
+<span class="k">else</span> <span class="p">{</span>
+    <span class="n">action_n</span><span class="p">();</span>
+<span class="p">}</span>
+</code></pre></div>
+<p>没有办法像 <code>case</code> 那样清晰。</p>
+
+<h3><code>given ... when</code></h3>
+
+<p>从 Perl 5.10.1 开始，你可以使用下列代码来打开实验性的 <code>switch</code> 特性：</p>
+<div class="highlight"><pre><code class="language-perl" data-lang="perl"><span class="k">use</span> <span class="n">feature</span> <span class="s">&quot;switch&quot;</span><span class="p">;</span>
+
+<span class="n">given</span> <span class="p">(</span><span class="nv">$var</span><span class="p">)</span> <span class="p">{</span>
+    <span class="n">when</span> <span class="p">(</span><span class="sr">/^abc/</span><span class="p">)</span> <span class="p">{</span> <span class="nv">$abc</span> <span class="o">=</span> <span class="mi">1</span> <span class="p">}</span>
+    <span class="n">when</span> <span class="p">(</span><span class="sr">/^def/</span><span class="p">)</span> <span class="p">{</span> <span class="nv">$def</span> <span class="o">=</span> <span class="mi">1</span> <span class="p">}</span>
+    <span class="n">when</span> <span class="p">(</span><span class="sr">/^xyz/</span><span class="p">)</span> <span class="p">{</span> <span class="nv">$xyz</span> <span class="o">=</span> <span class="mi">1</span> <span class="p">}</span>
+    <span class="n">default</span>       <span class="p">{</span> <span class="nv">$nothing</span> <span class="o">=</span> <span class="mi">1</span> <span class="p">}</span>
+<span class="p">}</span>   
+</code></pre></div>
+<h3><code>next/last/continue/redo</code></h3>
+
+<p>考虑以下循环：</p>
+<div class="highlight"><pre><code class="language-perl" data-lang="perl"><span class="nv">$i</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+<span class="k">while</span> <span class="p">(</span> <span class="mi">1</span> <span class="p">)</span> <span class="p">{</span>
+    <span class="k">last</span> <span class="k">if</span> <span class="nv">$i</span> <span class="o">&gt;</span> <span class="mi">3</span><span class="p">;</span>
+    <span class="nv">$i</span><span class="o">++</span><span class="p">;</span>
+    <span class="k">next</span> <span class="k">if</span> <span class="nv">$i</span> <span class="o">==</span> <span class="mi">1</span><span class="p">;</span>
+    <span class="k">redo</span> <span class="k">if</span> <span class="nv">$i</span> <span class="o">==</span> <span class="mi">2</span><span class="p">;</span>
+<span class="p">}</span>
+<span class="k">continue</span> <span class="p">{</span>
+    <span class="k">print</span> <span class="s">&quot;$i\n&quot;</span><span class="p">;</span>
+<span class="p">}</span>
+</code></pre></div>
+<p>输出：</p>
+<div class="highlight"><pre><code class="language-perl" data-lang="perl"><span class="mi">1</span>
+<span class="mi">3</span>
+<span class="mi">4</span>
+</code></pre></div>
+<p><code>next</code> 跳到块尾并继续或重新开始。</p>
+
+<p><code>redo</code> 立即跳回到循环的开头。</p>
+
+<p><code>last</code> 跳到块尾并阻止循环再次执行。</p>
+
+<p><code>continue</code> 在块尾执行。</p>
+
+
+<div id="post-nav" class="clearfix">
+  
+  <a rel="prev" href="/regexes.html">&larr;正则表达式</a>
+  
+  
+  <a rel="next" href="/files.html" style="float:right;">文件&rarr;</a>
+  
+</div>
+
+            </div>
+            <div id="footer">
+                follow me: <a href="https://twitter.com/xuxiaodong">twitter</a> / <a href="https://github.com/xuxiaodong">github</a> / <a href="http://www.linkedin.com/pub/xiaodong-xu/62/319/7">linkedin</a>
+            </div>
+        </div>
+    </body>
+</html>

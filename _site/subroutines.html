@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        
+        <title>Perl 程序员应该知道的事: 子例程</title>
+        
+        <link rel="stylesheet" href="//ty.yukir.net/ty.css">
+        <link rel="stylesheet" type="text/css" href="css/syntax.css">
+        <link rel="stylesheet" type="text/css" href="css/hgtip/style.css">
+    </head>
+    <body>
+        <div id="main-wrap" class="ty ty-wide">
+            <div id="header">
+                <h1><a href="" title="Perl 程序员应该知道的事">Perl 程序员应该知道的事</a></h1>
+            </div>
+            <div id="content">
+                
+<h2><a href="http://perl101.org/subroutines.html" title="External link">子例程</a></h2>
+
+<p id="tip-info">October 27, 2013 @ 10:14 AM</p>
+<h3>使用 <code>shift</code> 检索子例程的参数</h3>
+
+<p>子例程的参数来自于特殊的 <code>@_</code> 数组。不带参数的 <code>shift</code> 默认使用 <code>@_</code>。</p>
+<div class="highlight"><pre><code class="language-perl" data-lang="perl"><span class="k">sub </span><span class="nf">volume</span> <span class="p">{</span>
+    <span class="k">my</span> <span class="nv">$height</span> <span class="o">=</span> <span class="nb">shift</span><span class="p">;</span>
+    <span class="k">my</span> <span class="nv">$width</span>  <span class="o">=</span> <span class="nb">shift</span><span class="p">;</span>
+    <span class="k">my</span> <span class="nv">$depth</span>  <span class="o">=</span> <span class="nb">shift</span><span class="p">;</span>
+
+    <span class="k">return</span> <span class="nv">$height</span> <span class="o">*</span> <span class="nv">$width</span> <span class="o">*</span> <span class="nv">$depth</span><span class="p">;</span>
+<span class="p">}</span>
+</code></pre></div>
+<h3>使用列表赋值来赋给子例程参数</h3>
+
+<p>你也可以使用列表赋值赋给子例程参数：</p>
+<div class="highlight"><pre><code class="language-perl" data-lang="perl"><span class="k">sub </span><span class="nf">volume</span> <span class="p">{</span>
+    <span class="k">my</span> <span class="p">(</span><span class="nv">$height</span><span class="p">,</span> <span class="nv">$width</span><span class="p">,</span> <span class="nv">$depth</span><span class="p">)</span> <span class="o">=</span> <span class="nv">@_</span><span class="p">;</span>
+
+    <span class="k">return</span> <span class="nv">$height</span> <span class="o">*</span> <span class="nv">$width</span> <span class="o">*</span> <span class="nv">$depth</span><span class="p">;</span>
+<span class="p">}</span>
+</code></pre></div>
+<h3>通过访问 <code>@_</code> 直接处理子例程参数</h3>
+
+<p>在某些情况下，但我们希望很少，你能够通过 <code>@_</code> 数组直接访问参数。</p>
+<div class="highlight"><pre><code class="language-perl" data-lang="perl"><span class="k">sub </span><span class="nf">volume</span> <span class="p">{</span>
+    <span class="k">return</span> <span class="nv">$_</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">*</span> <span class="nv">$_</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">*</span> <span class="nv">$_</span><span class="p">[</span><span class="mi">2</span><span class="p">];</span>
+<span class="p">}</span>
+</code></pre></div>
+<h3>传递的参数能被修改</h3>
+
+<p>传递给子例程的参数是实际参数的别名。</p>
+<div class="highlight"><pre><code class="language-perl" data-lang="perl"><span class="k">my</span> <span class="nv">$foo</span> <span class="o">=</span> <span class="mi">3</span><span class="p">;</span>
+<span class="k">print</span> <span class="n">incr1</span><span class="p">(</span><span class="nv">$foo</span><span class="p">)</span> <span class="o">.</span> <span class="s">&quot;\n&quot;</span><span class="p">;</span> <span class="c1"># prints 4</span>
+<span class="k">print</span> <span class="s">&quot;$foo\n&quot;</span><span class="p">;</span> <span class="c1"># prints 3</span>
+
+<span class="k">sub </span><span class="nf">incr1</span> <span class="p">{</span>
+    <span class="k">return</span> <span class="nv">$_</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">+</span><span class="mi">1</span><span class="p">;</span>
+<span class="p">}</span>
+</code></pre></div>
+<p>如果你想要这种效果的话，这样更好：</p>
+<div class="highlight"><pre><code class="language-perl" data-lang="perl"><span class="k">sub </span><span class="nf">incr2</span> <span class="p">{</span>
+    <span class="k">return</span> <span class="o">++</span><span class="nv">$_</span><span class="p">[</span><span class="mi">0</span><span class="p">];</span>
+<span class="p">}</span>
+</code></pre></div>
+<h3>子例程没有检查参数</h3>
+
+<p>如果你喜欢，你能够将任意东东传递给子例程。</p>
+<div class="highlight"><pre><code class="language-perl" data-lang="perl"><span class="k">sub </span><span class="nf">square</span> <span class="p">{</span>
+    <span class="k">my</span> <span class="nv">$number</span> <span class="o">=</span> <span class="nb">shift</span><span class="p">;</span>
+
+    <span class="k">return</span> <span class="nv">$number</span> <span class="o">*</span> <span class="nv">$number</span><span class="p">;</span>
+<span class="p">}</span>
+
+<span class="k">my</span> <span class="nv">$n</span> <span class="o">=</span> <span class="n">square</span><span class="p">(</span> <span class="s">&#39;Dog food&#39;</span><span class="p">,</span> <span class="mf">14.5</span><span class="p">,</span> <span class="s">&#39;Blah blah blah&#39;</span> <span class="p">);</span>
+</code></pre></div>
+<p>该函数只会使用第一个参数。因为这个关系，你可以使用任意数目的参数，
+甚至没有参数来调用函数。</p>
+<div class="highlight"><pre><code class="language-perl" data-lang="perl"><span class="k">my</span> <span class="nv">$n</span> <span class="o">=</span> <span class="n">square</span><span class="p">();</span>
+</code></pre></div>
+<p>Perl 不会对此抱怨。</p>
+
+<p><em>Params::Validate</em> 模块解决了许多验证问题。</p>
+
+<h3>Perl 有原型，忽略它们</h3>
+
+<p>在演进的道路上加入了原型，因此你可以像这样干：</p>
+<div class="highlight"><pre><code class="language-perl" data-lang="perl"><span class="k">sub </span><span class="nf">square</span><span class="p">($)</span> <span class="p">{</span>
+    <span class="o">...</span>
+<span class="p">}</span>
+
+<span class="k">my</span> <span class="nv">$n</span> <span class="o">=</span> <span class="n">square</span><span class="p">(</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span> <span class="p">);</span> <span class="c1"># run-time error</span>
+</code></pre></div>
+<p>无论如何都不要使用它们。它们不会作用于对象，它们需要在调用子例程
+前先予以声明。它们是好想法，但只是不实用。</p>
+
+<h3>利用 <code>BEGIN</code> 块在编译时做事</h3>
+
+<p><code>BEGIN</code> 是一种特殊的代码块类型。它允许程序员在 Perl 的编译阶段执行
+代码，这样可以执行初始化及做其他事情。</p>
+
+<p>Perl 使用 <code>BEGIN</code> 在任意时导入模块。下列两个语句是等效的：</p>
+<div class="highlight"><pre><code class="language-perl" data-lang="perl"><span class="k">use</span> <span class="nn">WWW::</span><span class="n">Mechanize</span><span class="p">;</span>
+
+<span class="k">BEGIN</span> <span class="p">{</span>
+    <span class="nb">require</span> <span class="nn">WWW::</span><span class="n">Mechanize</span><span class="p">;</span>
+    <span class="nb">import</span> <span class="nn">WWW::</span><span class="n">Mechanize</span><span class="p">;</span>
+<span class="p">}</span>
+</code></pre></div>
+<h3>传递数组及哈希引用</h3>
+
+<p>记住传给子例程的参数是作为一个大数组传递的。如果你像下面这样干：</p>
+<div class="highlight"><pre><code class="language-perl" data-lang="perl"><span class="k">my</span> <span class="nv">@stooges</span>    <span class="o">=</span> <span class="sx">qw( Moe Larry Curly )</span><span class="p">;</span>
+<span class="k">my</span> <span class="nv">@sandwiches</span> <span class="o">=</span> <span class="sx">qw( tuna ham-n-cheese PBJ )</span><span class="p">;</span>
+
+<span class="n">lunch</span><span class="p">(</span> <span class="nv">@stooges</span><span class="p">,</span> <span class="nv">@sandwiches</span> <span class="p">);</span>
+</code></pre></div>
+<p>那么传给 <code>lunch</code> 的是列表：</p>
+<div class="highlight"><pre><code class="language-perl" data-lang="perl"><span class="p">(</span> <span class="s">&quot;Moe&quot;</span><span class="p">,</span> <span class="s">&quot;Larry&quot;</span><span class="p">,</span> <span class="s">&quot;Curly&quot;</span><span class="p">,</span> <span class="s">&quot;tuna&quot;</span><span class="p">,</span> <span class="s">&quot;ham-n-cheese&quot;</span><span class="p">,</span> <span class="s">&quot;PBJ&quot;</span> <span class="p">);</span>
+</code></pre></div>
+<p>在 <code>lunch</code> 中，你如何能告诉 stooges 结束及 sandwiches 开始的位置？
+你不能。如果你尝试这样：</p>
+<div class="highlight"><pre><code class="language-perl" data-lang="perl"><span class="k">sub </span><span class="nf">lunch</span> <span class="p">{</span>
+    <span class="k">my</span> <span class="p">(</span><span class="nv">@stooges</span><span class="p">,</span> <span class="nv">@sandwiches</span><span class="p">)</span> <span class="o">=</span> <span class="nv">@_</span><span class="p">;</span>
+</code></pre></div>
+<p>那么所有 6 个元素都会跑到 <code>@stooges</code> 中，而 <code>@sandwiches</code> 什么都不会
+得到。</p>
+
+<p>答案是使用引用，正如：</p>
+<div class="highlight"><pre><code class="language-perl" data-lang="perl"><span class="n">lunch</span><span class="p">(</span> <span class="o">\</span><span class="nv">@stooges</span><span class="p">,</span> <span class="o">\</span><span class="nv">@sandwiches</span> <span class="p">);</span>
+
+<span class="k">sub </span><span class="nf">lunch</span> <span class="p">{</span>
+    <span class="k">my</span> <span class="nv">$stoogeref</span>   <span class="o">=</span> <span class="nb">shift</span><span class="p">;</span>
+    <span class="k">my</span> <span class="nv">$sandwichref</span> <span class="o">=</span> <span class="nb">shift</span><span class="p">;</span>
+
+    <span class="k">my</span> <span class="nv">@stooges</span>     <span class="o">=</span> <span class="nv">@</span><span class="p">{</span><span class="nv">$stoogeref</span><span class="p">};</span>
+    <span class="k">my</span> <span class="nv">@sandwichref</span> <span class="o">=</span> <span class="nv">@</span><span class="p">{</span><span class="nv">$sandwichref</span><span class="p">};</span>
+    <span class="o">...</span>
+<span class="p">}</span>
+</code></pre></div>
+
+<div id="post-nav" class="clearfix">
+  
+  <a rel="prev" href="/files.html">&larr;文件</a>
+  
+  
+  <a rel="next" href="/pod.html" style="float:right;">POD 格式&rarr;</a>
+  
+</div>
+
+            </div>
+            <div id="footer">
+                follow me: <a href="https://twitter.com/xuxiaodong">twitter</a> / <a href="https://github.com/xuxiaodong">github</a> / <a href="http://www.linkedin.com/pub/xiaodong-xu/62/319/7">linkedin</a>
+            </div>
+        </div>
+    </body>
+</html>

@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        
+        <title>Perl 程序员应该知道的事: 调试</title>
+        
+        <link rel="stylesheet" href="//ty.yukir.net/ty.css">
+        <link rel="stylesheet" type="text/css" href="css/syntax.css">
+        <link rel="stylesheet" type="text/css" href="css/hgtip/style.css">
+    </head>
+    <body>
+        <div id="main-wrap" class="ty ty-wide">
+            <div id="header">
+                <h1><a href="" title="Perl 程序员应该知道的事">Perl 程序员应该知道的事</a></h1>
+            </div>
+            <div id="content">
+                
+<h2><a href="http://perl101.org/debugging.html" title="External link">调试</a></h2>
+
+<p id="tip-info">October 28, 2013 @ 09:01 AM</p>
+<h3>开启 <code>strict</code> 和 <code>warnings</code></h3>
+
+<p>无论何时调试代码，都确信已开启了 <code>strict</code> 和 <code>warnings</code> 编译指令。</p>
+
+<p>将下面两行：</p>
+<div class="highlight"><pre><code class="language-perl" data-lang="perl"><span class="k">use</span> <span class="n">strict</span><span class="p">;</span>
+<span class="k">use</span> <span class="n">warnings</span><span class="p">;</span>
+</code></pre></div>
+<p>放到你试图调试或将来可能想调试的程序的顶部。</p>
+
+<p><a href="http://perldoc.perl.org/strict.html">strict</a> 编译指令强制你使用那些允许 Perl 在编译时找出错误的许多特性。
+首先最重要的是，在 <code>strict</code> 下，变量必须在使用前声明。多数情况下，这意味
+着使用 <code>my</code>：</p>
+<div class="highlight"><pre><code class="language-perl" data-lang="perl"><span class="k">use</span> <span class="n">strict</span><span class="p">;</span>
+<span class="k">my</span> <span class="nv">$foo</span> <span class="o">=</span> <span class="mi">7</span><span class="p">;</span>                <span class="c1"># OK, normal variable</span>
+<span class="k">print</span> <span class="s">&quot;foo is $fooo\n&quot;</span><span class="p">;</span>     <span class="c1"># Perl complains and aborts compilation</span>
+</code></pre></div>
+<p>没有 <code>strict</code>，Perl 仍然会高兴地执行上面的程序。但你可能会感到杯具，想不
+明白 <code>$foo</code> 为何没有值。启用 <code>strict</code> 也会减少许多令人头痛的输入错误。</p>
+
+<p>另外，<code>strict</code> 不允许使用多数裸字。</p>
+<div class="highlight"><pre><code class="language-perl" data-lang="perl"><span class="nb">no</span> <span class="n">strict</span><span class="p">;</span>
+<span class="nv">$foo</span> <span class="o">=</span> <span class="n">Lorem</span><span class="p">;</span>
+<span class="k">print</span> <span class="s">&quot;$foo\n&quot;</span><span class="p">;</span>         <span class="c1"># Prints &quot;Lorem&quot;</span>
+
+<span class="k">use</span> <span class="n">strict</span><span class="p">;</span>
+<span class="k">my</span> <span class="nv">$foo</span> <span class="o">=</span> <span class="n">ipsum</span><span class="p">;</span>        <span class="c1"># Complains about bareword</span>
+<span class="nv">$foo</span> <span class="o">=</span> <span class="p">(</span>
+    <span class="n">Lorem</span>   <span class="o">=&gt;</span> <span class="s">&#39;ipsum&#39;</span>  <span class="c1"># OK, barewords allowed on left of =&gt;</span>
+<span class="p">);</span>
+
+<span class="nv">$SIG</span><span class="p">{</span><span class="n">PIPE</span><span class="p">}</span> <span class="o">=</span> <span class="n">handler</span><span class="p">;</span>   <span class="c1"># Complains</span>
+<span class="nv">$SIG</span><span class="p">{</span><span class="n">PIPE</span><span class="p">}</span> <span class="o">=</span> <span class="o">\&amp;</span><span class="n">handler</span><span class="p">;</span> <span class="c1"># OK</span>
+<span class="nv">$SIG</span><span class="p">{</span><span class="n">PIPE</span><span class="p">}</span> <span class="o">=</span> <span class="s">&quot;handler&quot;</span><span class="p">;</span> <span class="c1"># Also, OK, but above is preferred</span>
+</code></pre></div>
+<p>最后，如果你使用<a href="http://perldoc.perl.org/perlref.html#Symbolic-references">符号引用</a>，启用 <code>strict</code> 将抛出运行时错误。</p>
+<div class="highlight"><pre><code class="language-perl" data-lang="perl"><span class="nb">no</span> <span class="n">strict</span><span class="p">;</span>
+<span class="nv">$name</span> <span class="o">=</span> <span class="s">&quot;foo&quot;</span><span class="p">;</span>
+<span class="nv">$$name</span> <span class="o">=</span> <span class="s">&quot;bar&quot;</span><span class="p">;</span>             <span class="c1"># Sets the variable $foo to 1</span>
+<span class="k">print</span> <span class="s">&quot;$name $$name\n&quot;</span><span class="p">;</span>     <span class="c1"># Prints &quot;foo bar&quot;</span>
+
+<span class="k">use</span> <span class="n">strict</span><span class="p">;</span>
+<span class="k">my</span> <span class="nv">$name</span> <span class="o">=</span> <span class="s">&quot;foo&quot;</span><span class="p">;</span>
+<span class="nv">$$name</span> <span class="o">=</span> <span class="s">&quot;bar&quot;</span><span class="p">;</span>             <span class="c1"># Complains: can&#39;t use &quot;foo&quot; as ref</span>
+</code></pre></div>
+<p><code>warnings</code> 编译指令将使 Perl 吐出许多有用的抱怨，以便让你知道程序中的
+某个东东并非你所想要的：</p>
+<div class="highlight"><pre><code class="language-perl" data-lang="perl"><span class="k">use</span> <span class="n">warnings</span><span class="p">;</span>
+<span class="k">my</span> <span class="nv">$foo</span> <span class="o">=</span> <span class="p">;</span>
+<span class="nv">$foo</span> <span class="o">+=</span> <span class="mi">3</span><span class="p">;</span>
+<span class="k">my</span> <span class="nv">$foo</span> <span class="o">=</span> <span class="mi">1</span><span class="p">;</span>            <span class="c1"># Compains: redeclaration of variable</span>
+
+<span class="k">my</span> <span class="nv">$bar</span> <span class="o">=</span> <span class="s">&#39;12fred34&#39;</span><span class="p">;</span>
+<span class="k">my</span> <span class="nv">$baz</span> <span class="o">=</span> <span class="nv">$bar</span> <span class="o">+</span> <span class="mi">1</span><span class="p">;</span>     <span class="c1"># Complains: Argument &quot;12fred34&quot; isn&#39;t numeric</span>
+                        <span class="c1"># Complains: Name &quot;main::baz&quot; used only once</span>
+</code></pre></div>
+<p>参阅 strict 及 warnings 的文档了解其他信息。关于不用 <code>strict</code> 所带来的
+恐怖故事，可以看看 <a href="http://www.perlmonks.org/?node_id=482733">PerlMonks</a> 上面的帖子。</p>
+
+<h3>检查每个 <code>open</code> 的返回值</h3>
+
+<p>你将经常看到人们抱怨下面的代码无法执行：</p>
+<div class="highlight"><pre><code class="language-perl" data-lang="perl"><span class="nb">open</span><span class="p">(</span> <span class="k">my</span> <span class="nv">$file</span><span class="p">,</span> <span class="nv">$filename</span> <span class="p">);</span>
+<span class="k">while</span> <span class="p">(</span> <span class="sr">&lt;$file&gt;</span> <span class="p">)</span> <span class="p">{</span>
+    <span class="o">...</span>
+<span class="p">}</span>
+</code></pre></div>
+<p>接着抱怨 <code>while</code> 循环也被破坏了。这儿的常见问题是文件 <code>$filename</code> 实际
+上并不存在，因此 <code>open</code> 将失败。如果没有检查，那么你将从来不会知道。使
+用以下代码替换它：</p>
+<div class="highlight"><pre><code class="language-perl" data-lang="perl"><span class="nb">open</span><span class="p">(</span> <span class="k">my</span> <span class="nv">$file</span><span class="p">,</span> <span class="s">&#39;&lt;&#39;</span><span class="p">,</span> <span class="nv">$filename</span> <span class="p">)</span> <span class="ow">or</span> <span class="nb">die</span> <span class="s">&quot;Can&#39;t open $filename: $!&quot;</span><span class="p">;</span>
+</code></pre></div>
+<h3>利用 <code>diagnostics</code> 扩展警告</h3>
+
+<p>有时候警告消息并没有解释你想要的那么多。例如，为何你会获得此警告？</p>
+<div class="highlight"><pre><code class="language-text" data-lang="text">Use of uninitialized value in string eq at /Library/Perl/5.8.6/WWW/Mechanize.pm line 695.
+</code></pre></div>
+<p>试试将下列内容放到程序顶部并重新执行代码：</p>
+<div class="highlight"><pre><code class="language-perl" data-lang="perl"><span class="k">use</span> <span class="n">diagnostics</span><span class="p">;</span>
+</code></pre></div>
+<p>现在警告看起来像这样：</p>
+<div class="highlight"><pre><code class="language-text" data-lang="text">Use of uninitialized value in string eq at /Library/Perl/5.8.6/WWW/Mechanize.pm
+    line 695 (#1)
+(W uninitialized) An undefined value was used as if it were already
+defined.  It was interpreted as a &quot;&quot; or a 0, but maybe it was a mistake.
+To suppress this warning assign a defined value to your variables.
+
+To help you figure out what was undefined, perl tells you what operation
+you used the undefined value in.  Note, however, that perl optimizes your
+program and the operation displayed in the warning may not necessarily
+appear literally in your program.  For example, &quot;that $foo&quot; is
+usually optimized into &quot;that &quot; . $foo, and the warning will refer to
+the concatenation (.) operator, even though there is no . in your
+program.
+</code></pre></div>
+<p>更多的信息将帮助你找出程序的问题。</p>
+
+<p>记住你也可以从命令行指定模块和编译指令，因此你甚至不必编辑源代码来使用
+<code>diagnostics</code>。使用 <code>-M</code> 命令行选项再次执行它：</p>
+<div class="highlight"><pre><code class="language-perl" data-lang="perl"><span class="n">perl</span> <span class="o">-</span><span class="n">Mdiagnostics</span> <span class="n">mycode</span><span class="o">.</span><span class="n">pl</span>
+</code></pre></div>
+<h3>使用优化信号来获得栈跟踪信息</h3>
+
+<p>有时候你将获得警告，但你并不明白是如何得到的。比如：</p>
+<div class="highlight"><pre><code class="language-text" data-lang="text">Use of uninitialized value in string eq at /Library/Perl/5.8.6/WWW/Mechanize.pm line 695.
+</code></pre></div>
+<p>你可以看到模块的 695 行代码干了什么，但你无法看到你的代码在此时干了什么。
+你将需要看到子例程被调用的跟踪信息。</p>
+
+<p>当 Perl 调用 <code>die</code> 或 <code>warn</code> 时，它将分别指定 <code>$SIG{__DIE__}</code> 和
+<code>$SIG{__WARN__}</code> 来通过子例程。如果你修改它们，让其成为比 <code>CORE::die</code> 和
+<code>CORE::warn</code> 更有用的话，你就得到了一个有用的调试工具。这种情况，可以使用
+<code>Carp</code> 模块的 <code>confess</code> 函数。</p>
+
+<p>在你程序的顶部，添加这些行：</p>
+<div class="highlight"><pre><code class="language-perl" data-lang="perl"><span class="k">use</span> <span class="n">Carp</span> <span class="sx">qw( confess )</span><span class="p">;</span>
+<span class="nv">$SIG</span><span class="p">{</span><span class="bp">__DIE__</span><span class="p">}</span> <span class="o">=</span>  <span class="o">\&amp;</span><span class="n">confess</span><span class="p">;</span>
+<span class="nv">$SIG</span><span class="p">{</span><span class="bp">__WARN__</span><span class="p">}</span> <span class="o">=</span> <span class="o">\&amp;</span><span class="n">confess</span><span class="p">;</span>
+</code></pre></div>
+<p>现在，当代码调用 <code>warn</code> 或 <code>die</code> 时，<code>Carp::confess</code> 函数将处理它。<code>confess</code>
+打印原始警告，跟着栈跟踪信息，然后停止执行程序。</p>
+<div class="highlight"><pre><code class="language-perl" data-lang="perl"><span class="n">Use</span> <span class="n">of</span> <span class="n">uninitialized</span> <span class="n">value</span> <span class="n">in</span> <span class="n">string</span> <span class="ow">eq</span> <span class="n">at</span> <span class="sr">/Library/</span><span class="n">Perl</span><span class="sr">/5.8.6/</span><span class="n">WWW</span><span class="o">/</span><span class="n">Mechanize</span><span class="o">.</span><span class="n">pm</span> <span class="n">line</span> <span class="mi">695</span><span class="o">.</span>
+    <span class="n">at</span> <span class="sr">/Library/</span><span class="n">Perl</span><span class="sr">/5.8.6/</span><span class="n">WWW</span><span class="o">/</span><span class="n">Mechanize</span><span class="o">.</span><span class="n">pm</span> <span class="n">line</span> <span class="mi">695</span>
+        <span class="nn">WWW::Mechanize::</span><span class="n">find_link</span><span class="p">(</span><span class="s">&#39;WWW::Mechanize=HASH(0x180e5bc)&#39;</span><span class="p">,</span> <span class="s">&#39;n&#39;</span><span class="p">,</span> <span class="s">&#39;undef&#39;</span><span class="p">)</span> <span class="n">called</span> <span class="n">at</span> <span class="n">foo</span><span class="o">.</span><span class="n">pl</span> <span class="n">line</span> <span class="mi">17</span>
+        <span class="nn">main::</span><span class="n">go_find_link</span><span class="p">(</span><span class="s">&#39;http://www.cnn.com&#39;</span><span class="p">)</span> <span class="n">called</span> <span class="n">at</span> <span class="n">foo</span><span class="o">.</span><span class="n">pl</span> <span class="n">line</span> <span class="mi">8</span>
+</code></pre></div>
+<p>现在我们有更多信息来调试代码，包括精确的调用函数及传递的参数。从这儿，
+我们能够容易地看到 <code>find_link</code> 的第三个参数是 <code>undef</code>，那将是一个开始
+调查的好地方。</p>
+
+<h3>使用 Carp::Always 获得栈跟踪信息</h3>
+
+<p>如果你不想覆盖信号处理器，那么可以安装 CPAN 模块 <a href="https://metacpan.org/release/Carp-Always">Carp::Always</a>。</p>
+
+<p>在安装之后，添加下行到你的代码中：</p>
+<div class="highlight"><pre><code class="language-perl" data-lang="perl"><span class="k">use</span> <span class="nn">Carp::</span><span class="n">Always</span><span class="p">;</span>
+</code></pre></div>
+<p>或者使用 <code>-MCarp::Always</code> 从命令行调用你的程序，这将总是会得到栈跟踪信息。</p>
+
+<h3>使用 Devel::REPL 交互执行 Perl 代码</h3>
+
+<p><a href="https://metacpan.org/release/Devel-REPL">Devel::REPL</a> 模块提供一个交互式的 Shell。通过该 Shell，你不用创建
+临时的源代码文件就可以做快速的原型开发及测试代码。</p>
+
+<p>在安装 Devel::REPL 之后，你可以执行以下命令启动 Shell：</p>
+<div class="highlight"><pre><code class="language-text" data-lang="text">$ re.pl
+</code></pre></div>
+
+<div id="post-nav" class="clearfix">
+  
+  <a rel="prev" href="/pod.html">&larr;POD 格式</a>
+  
+  
+  <a rel="next" href="/modules.html" style="float:right;">模块&rarr;</a>
+  
+</div>
+
+            </div>
+            <div id="footer">
+                follow me: <a href="https://twitter.com/xuxiaodong">twitter</a> / <a href="https://github.com/xuxiaodong">github</a> / <a href="http://www.linkedin.com/pub/xiaodong-xu/62/319/7">linkedin</a>
+            </div>
+        </div>
+    </body>
+</html>

@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        
+        <title>Perl 程序员应该知道的事: 文件</title>
+        
+        <link rel="stylesheet" href="//ty.yukir.net/ty.css">
+        <link rel="stylesheet" type="text/css" href="css/syntax.css">
+        <link rel="stylesheet" type="text/css" href="css/hgtip/style.css">
+    </head>
+    <body>
+        <div id="main-wrap" class="ty ty-wide">
+            <div id="header">
+                <h1><a href="" title="Perl 程序员应该知道的事">Perl 程序员应该知道的事</a></h1>
+            </div>
+            <div id="content">
+                
+<h2><a href="http://perl101.org/files.html" title="External link">文件</a></h2>
+
+<p id="tip-info">October 26, 2013 @ 08:27 PM</p>
+<h3>利用 <code>open</code> 和 <code>&lt;&gt;</code> 操作符更易读取文件</h3>
+
+<p>使用 Perl 打开并读取文件很简单。下面的示例代码演示如何打开文件，
+一行一行地读取，检查匹配正则表达式的文本，以及输出匹配的行。</p>
+<div class="highlight"><pre><code class="language-perl" data-lang="perl"><span class="nb">open</span><span class="p">(</span> <span class="k">my</span> <span class="nv">$fh</span><span class="p">,</span> <span class="s">&#39;&lt;&#39;</span><span class="p">,</span> <span class="nv">$filename</span> <span class="p">)</span> <span class="ow">or</span> <span class="nb">die</span> <span class="s">&quot;Can&#39;t open $filename: $!&quot;</span><span class="p">;</span>
+<span class="k">while</span> <span class="p">(</span> <span class="k">my</span> <span class="nv">$line</span> <span class="o">=</span> <span class="sr">&lt;$fh&gt;</span> <span class="p">)</span> <span class="p">{</span>
+    <span class="k">if</span> <span class="p">(</span> <span class="nv">$line</span> <span class="o">=~</span><span class="sr"> /wanted text/</span> <span class="p">)</span> <span class="p">{</span>
+        <span class="k">print</span> <span class="nv">$line</span><span class="p">;</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+<span class="nb">close</span> <span class="nv">$fh</span><span class="p">;</span>
+</code></pre></div>
+<p>总是检查 <code>open</code> 的返回码是否为真。如果为假，其结果在 <code>$!</code> 中。</p>
+
+<h3>利用 <code>chomp</code> 移除结尾的换行符</h3>
+
+<p>从文件读取行时会包含结尾的换行符。假如你有一个文本文件，其第一行是：</p>
+<div class="highlight"><pre><code class="language-text" data-lang="text">Aaron
+</code></pre></div>
+<p><code>Aaron</code> 实际上是 6 个字符<code>Aaron\n</code>。此代码将失败：</p>
+<div class="highlight"><pre><code class="language-perl" data-lang="perl"><span class="k">my</span> <span class="nv">$line</span> <span class="o">=</span> <span class="sr">&lt;$fh&gt;</span><span class="p">;</span>
+<span class="k">if</span> <span class="p">(</span> <span class="nv">$line</span> <span class="ow">eq</span> <span class="s">&#39;Aaron&#39;</span> <span class="p">)</span> <span class="p">{</span>
+    <span class="c1"># won&#39;t reach here, because it&#39;s really &quot;Aaron\n&quot;;</span>
+<span class="p">}</span>
+</code></pre></div>
+<p>要移除 <code>\n</code> 及结尾的其他任意空白，调用 <code>chomp</code>。</p>
+<div class="highlight"><pre><code class="language-perl" data-lang="perl"><span class="k">my</span> <span class="nv">$line</span> <span class="o">=</span> <span class="sr">&lt;$fh&gt;</span><span class="p">;</span>
+<span class="nb">chomp</span> <span class="nv">$line</span><span class="p">;</span>
+</code></pre></div>
+<p>现在 <code>$line</code> 为 5 个字符长。</p>
+
+<h3>利用 <code>$/</code> 更改行分隔符</h3>
+
+<p>可以更改输入记录分隔符 <code>$/</code>，其默认设置为 <code>\n</code>。</p>
+
+<p>设置 <code>$/</code> 一次读取一段。设置 <code>$/</code> 为 <code>undef</code> 将一次读取整个文件。
+参阅 <a href="http://perldoc.perl.org/perlvar.html">perlvar</a> 了解细节。</p>
+
+<h3>一次读取整个文件</h3>
+
+<p>你将注意到新手在读取文件时会使用下述两种方法之一：</p>
+<div class="highlight"><pre><code class="language-perl" data-lang="perl"><span class="nb">open</span> <span class="p">(</span><span class="n">FILE</span><span class="p">,</span><span class="nv">$filename</span><span class="p">)</span> <span class="o">||</span> <span class="nb">die</span> <span class="s">&quot;Cannot open &#39;$filename&#39;: $!&quot;</span><span class="p">;</span>
+<span class="nb">undef</span> <span class="vg">$/</span><span class="p">;</span>
+<span class="k">my</span> <span class="nv">$file_as_string</span> <span class="o">=</span> <span class="sr">&lt;FILE&gt;</span><span class="p">;</span>
+</code></pre></div>
+<p>或：</p>
+<div class="highlight"><pre><code class="language-perl" data-lang="perl"><span class="nb">open</span> <span class="p">(</span><span class="n">FILE</span><span class="p">,</span><span class="nv">$filename</span><span class="p">)</span> <span class="o">||</span> <span class="nb">die</span> <span class="s">&quot;Cannot open &#39;$filename&#39;: $!&quot;</span><span class="p">;</span>
+<span class="k">my</span> <span class="nv">$file_as_string</span> <span class="o">=</span> <span class="nb">join</span> <span class="s">&#39;&#39;</span><span class="p">,</span> <span class="sr">&lt;FILE&gt;</span><span class="p">;</span>
+</code></pre></div>
+<p>选择两种中的前者。第二种读取所有行到数组，然后组合成一个大字符串。
+第一种仅读取到字符串，不会间接创建行列表。</p>
+
+<p>然而最佳的方式是像这样：</p>
+<div class="highlight"><pre><code class="language-perl" data-lang="perl"><span class="k">my</span> <span class="nv">$file_as_string</span> <span class="o">=</span> <span class="k">do</span> <span class="p">{</span>
+    <span class="nb">open</span><span class="p">(</span> <span class="k">my</span> <span class="nv">$fh</span><span class="p">,</span> <span class="nv">$filename</span> <span class="p">)</span> <span class="ow">or</span> <span class="nb">die</span> <span class="s">&quot;Can&#39;t open $filename: $!&quot;</span><span class="p">;</span>
+    <span class="nb">local</span> <span class="vg">$/</span> <span class="o">=</span> <span class="nb">undef</span><span class="p">;</span>
+    <span class="sr">&lt;$fh&gt;</span><span class="p">;</span>
+<span class="p">};</span>
+</code></pre></div>
+<p><code>do</code> 块返回块中最后求解的值。此方法将 <code>$/</code> 设置为局部作用域，所以
+超出块范围会设置为默认值。如果没有局部化 <code>$/</code>，那么它将保留设置的
+值，其他代码段可能并不期望它被设置为 <code>undef</code>。</p>
+
+<p>下面是另一种方法：</p>
+<div class="highlight"><pre><code class="language-perl" data-lang="perl"><span class="k">use</span> <span class="nn">File::</span><span class="n">Slurp</span> <span class="sx">qw( read_file )</span><span class="p">;</span>
+<span class="k">my</span> <span class="nv">$file_as_string</span> <span class="o">=</span> <span class="n">read_file</span><span class="p">(</span> <span class="nv">$filename</span> <span class="p">);</span>
+</code></pre></div>
+<p><em>File::Slurp</em> 是一次性读取和写入的有用模块，它将在背后做魔术般的快速
+处理。</p>
+
+<h3>利用 <code>glob()</code> 获取文件列表</h3>
+
+<p>使用标准的 Shell 展开模式来获取文件列表。</p>
+<div class="highlight"><pre><code class="language-perl" data-lang="perl"><span class="k">my</span> <span class="nv">@files</span> <span class="o">=</span> <span class="nb">glob</span><span class="p">(</span> <span class="s">&quot;*&quot;</span> <span class="p">);</span>
+</code></pre></div>
+<p>将它们传递给 <code>grep</code> 来做快速过滤。例如，要获取文件而非目录：</p>
+<div class="highlight"><pre><code class="language-perl" data-lang="perl"><span class="k">my</span> <span class="nv">@files</span> <span class="o">=</span> <span class="nb">grep</span> <span class="p">{</span> <span class="o">-</span><span class="n">f</span> <span class="p">}</span> <span class="nb">glob</span><span class="p">(</span> <span class="s">&quot;*&quot;</span> <span class="p">);</span>
+</code></pre></div>
+<h3>使用 <code>unlink</code> 移除文件</h3>
+
+<p>Perl 内置函数 <code>delete</code> 用来删除哈希的元素，而非文件系统中的文件。</p>
+<div class="highlight"><pre><code class="language-perl" data-lang="perl"><span class="k">my</span> <span class="nv">%stats</span><span class="p">;</span>
+
+<span class="nv">$stats</span><span class="p">{</span><span class="n">filename</span><span class="p">}</span> <span class="o">=</span> <span class="s">&#39;foo.txt&#39;</span><span class="p">;</span>
+
+<span class="nb">unlink</span> <span class="nv">$stats</span><span class="p">{</span><span class="n">filename</span><span class="p">};</span> <span class="c1"># RIGHT: Removes &quot;foo.txt&quot; from the filesystem</span>
+
+<span class="nb">delete</span> <span class="nv">$stats</span><span class="p">{</span><span class="n">filename</span><span class="p">};</span> <span class="c1"># WRONG: Removes the &quot;filename&quot; element from %stats</span>
+</code></pre></div>
+<p>术语 <code>unlink</code> 来自于 Unix 从目录节点移除文件链接的想法。</p>
+
+<h3>在 Windows 下使用 Unix 风格的目录</h3>
+
+<p>即使 Unix 使用 <code>/usr/local/bin</code>，而 Windows 使用 <code>C:\foo\bar\bat</code> 这样的路径，
+你仍然能够在文件名中使用斜杠。</p>
+<div class="highlight"><pre><code class="language-perl" data-lang="perl"><span class="k">my</span> <span class="nv">$filename</span> <span class="o">=</span> <span class="s">&#39;C:/foo/bar/bat&#39;</span><span class="p">;</span>
+<span class="nb">open</span><span class="p">(</span> <span class="k">my</span> <span class="nv">$fh</span><span class="p">,</span> <span class="s">&#39;&lt;&#39;</span><span class="p">,</span> <span class="nv">$filename</span> <span class="p">)</span> <span class="ow">or</span> <span class="nb">die</span> <span class="s">&quot;Can&#39;t open $filename: $!&quot;</span><span class="p">;</span>
+</code></pre></div>
+<p>在这种情况下，Perl 在打开文件前魔术化地将 <code>C:/foo/bar/bat</code> 更改为 <code>C:\foo\bar\bat</code>。
+这也会防止文件名包含未引起的反斜杠所带来的问题。</p>
+<div class="highlight"><pre><code class="language-perl" data-lang="perl"><span class="k">my</span> <span class="nv">$filename</span> <span class="o">=</span> <span class="s">&quot;C:\tmp&quot;</span><span class="p">;</span>
+</code></pre></div>
+<p><code>$filename</code> 包含 5 个字符：C、:、tab 字符、m、及 p。实际上，它应该写成：</p>
+<div class="highlight"><pre><code class="language-perl" data-lang="perl"><span class="k">my</span> <span class="nv">$filename</span> <span class="o">=</span> <span class="s">&#39;C:\tmp&#39;</span><span class="p">;</span>
+<span class="k">my</span> <span class="nv">$filename</span> <span class="o">=</span> <span class="s">&quot;C:\\tmp&quot;</span><span class="p">;</span>
+</code></pre></div>
+<p>或者你让 Perl 来照料它：</p>
+<div class="highlight"><pre><code class="language-perl" data-lang="perl"><span class="k">my</span> <span class="nv">$filename</span> <span class="o">=</span> <span class="s">&#39;C:/tmp&#39;</span><span class="p">;</span>
+</code></pre></div>
+
+<div id="post-nav" class="clearfix">
+  
+  <a rel="prev" href="/flow-control.html">&larr;流程控制</a>
+  
+  
+  <a rel="next" href="/subroutines.html" style="float:right;">子例程&rarr;</a>
+  
+</div>
+
+            </div>
+            <div id="footer">
+                follow me: <a href="https://twitter.com/xuxiaodong">twitter</a> / <a href="https://github.com/xuxiaodong">github</a> / <a href="http://www.linkedin.com/pub/xiaodong-xu/62/319/7">linkedin</a>
+            </div>
+        </div>
+    </body>
+</html>

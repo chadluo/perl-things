@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        
+        <title>Perl 程序员应该知道的事: 字符串</title>
+        
+        <link rel="stylesheet" href="//ty.yukir.net/ty.css">
+        <link rel="stylesheet" type="text/css" href="css/syntax.css">
+        <link rel="stylesheet" type="text/css" href="css/hgtip/style.css">
+    </head>
+    <body>
+        <div id="main-wrap" class="ty ty-wide">
+            <div id="header">
+                <h1><a href="" title="Perl 程序员应该知道的事">Perl 程序员应该知道的事</a></h1>
+            </div>
+            <div id="content">
+                
+<h2><a href="http://perl101.org/strings.html" title="External link">字符串</a></h2>
+
+<p id="tip-info">October 25, 2013 @ 01:34 PM</p>
+<h3>利用内插将字符串嵌入到另一个字符串中</h3>
+
+<p>双引号（&quot;&quot;）字符串能够内插其他变量。</p>
+<div class="highlight"><pre><code class="language-perl" data-lang="perl"><span class="k">my</span> <span class="nv">$name</span>     <span class="o">=</span> <span class="s">&quot;Inigo Montoya&quot;</span><span class="p">;</span>
+<span class="k">my</span> <span class="nv">$relative</span> <span class="o">=</span> <span class="s">&quot;father&quot;</span><span class="p">;</span>
+
+<span class="k">print</span> <span class="s">&quot;My name is $name, you killed my $relative&quot;</span><span class="p">;</span>
+</code></pre></div>
+<h3>非内插字符串</h3>
+
+<p>如果你不想要内插，那么使用单引号（&#39;&#39;）。</p>
+<div class="highlight"><pre><code class="language-perl" data-lang="perl"><span class="k">print</span> <span class="s">&#39;You may have won $1,000,000&#39;</span><span class="p">;</span>
+</code></pre></div>
+<p>或者，你也可以转义特殊字符（印记）。</p>
+<div class="highlight"><pre><code class="language-perl" data-lang="perl"><span class="k">print</span> <span class="s">&quot;You may have won \$1,000,000&quot;</span><span class="p">;</span>
+</code></pre></div>
+<h3>在字符串中使用 Email 地址要小心</h3>
+
+<p>此 Email 地址并不是你想要的：</p>
+<div class="highlight"><pre><code class="language-perl" data-lang="perl"><span class="k">my</span> <span class="nv">$email</span> <span class="o">=</span> <span class="s">&quot;andy@foo.com&quot;</span><span class="p">;</span>
+<span class="k">print</span> <span class="nv">$email</span><span class="p">;</span>
+<span class="c1"># Prints &quot;andy.com&quot;</span>
+</code></pre></div>
+<p>这里的问题是 <em>@foo</em> 作为数组被内插了。如果你打开了 <code>use
+warnings</code>，那么此类问题就很明显了：</p>
+<div class="highlight"><pre><code class="language-perl" data-lang="perl"><span class="nv">$</span> <span class="nv">perl</span> <span class="n">foo</span><span class="o">.</span><span class="n">pl</span>
+
+<span class="n">Possible</span> <span class="n">unintended</span> <span class="n">interpolation</span> <span class="n">of</span> <span class="nv">@foo</span> <span class="n">in</span> <span class="n">string</span> <span class="n">at</span> <span class="n">foo</span> <span class="n">line</span> <span class="mi">1</span><span class="o">.</span>
+<span class="n">andy</span><span class="o">.</span><span class="n">com</span>
+</code></pre></div>
+<p>解决办法是，要么使用非内插的引号：</p>
+<div class="highlight"><pre><code class="language-perl" data-lang="perl"><span class="k">my</span> <span class="nv">$email</span> <span class="o">=</span> <span class="s">&#39;andy@foo.com&#39;</span><span class="p">;</span>
+<span class="k">my</span> <span class="nv">$email</span> <span class="o">=</span> <span class="sx">q{andy@foo.com}</span><span class="p">;</span>
+</code></pre></div>
+<p>要么转义 <em>@</em>：</p>
+<div class="highlight"><pre><code class="language-perl" data-lang="perl"><span class="k">my</span> <span class="nv">$email</span> <span class="o">=</span> <span class="s">&quot;andy\@foo.com&quot;</span><span class="p">;</span>
+</code></pre></div>
+<p>好的着色代码编辑器将帮助你防止此类问题。</p>
+
+<h3>使用 <code>length()</code> 获得字符串的长度</h3>
+<div class="highlight"><pre><code class="language-perl" data-lang="perl"><span class="k">my</span> <span class="nv">$str</span> <span class="o">=</span> <span class="s">&quot;Chicago Perl Mongers&quot;</span><span class="p">;</span>
+<span class="k">print</span> <span class="nb">length</span><span class="p">(</span> <span class="nv">$str</span> <span class="p">);</span> <span class="c1"># 20</span>
+</code></pre></div>
+<h3>使用  <code>substr()</code> 提取字符串</h3>
+
+<p><code>substr()</code> 能够做各种字符串提取：</p>
+<div class="highlight"><pre><code class="language-perl" data-lang="perl"><span class="k">my</span> <span class="nv">$x</span> <span class="o">=</span> <span class="s">&quot;Chicago Perl Mongers&quot;</span><span class="p">;</span>
+
+<span class="k">print</span> <span class="nb">substr</span><span class="p">(</span> <span class="nv">$x</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">4</span> <span class="p">);</span>   <span class="c1"># Chic</span>
+<span class="k">print</span> <span class="nb">substr</span><span class="p">(</span> <span class="nv">$x</span><span class="p">,</span> <span class="mi">13</span> <span class="p">);</span>     <span class="c1"># Mongers</span>
+<span class="k">print</span> <span class="nb">substr</span><span class="p">(</span> <span class="nv">$x</span><span class="p">,</span> <span class="o">-</span><span class="mi">4</span> <span class="p">);</span>     <span class="c1"># gers</span>
+</code></pre></div>
+<h3>关于字符串 vs. 数字不必担心太多</h3>
+
+<p>不像其他语言，Perl 不知道字符串来自于数字。它将做最好的 DTRT。</p>
+<div class="highlight"><pre><code class="language-perl" data-lang="perl"><span class="k">my</span> <span class="nv">$phone</span>    <span class="o">=</span> <span class="s">&quot;312-588-2300&quot;</span><span class="p">;</span>
+
+<span class="k">my</span> <span class="nv">$exchange</span> <span class="o">=</span> <span class="nb">substr</span><span class="p">(</span> <span class="nv">$phone</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">3</span> <span class="p">);</span> <span class="c1"># 588</span>
+<span class="k">print</span> <span class="nb">sqrt</span><span class="p">(</span> <span class="nv">$exchange</span> <span class="p">);</span> <span class="c1"># 24.2487113059643</span>
+</code></pre></div>
+<h3>利用 <code>++</code> 操作符自增非数字字符串</h3>
+
+<p>你能够利用 <code>++</code> 来自增字符串。字符串<code>abc</code>自增后变成<code>abd</code>。</p>
+<div class="highlight"><pre><code class="language-perl" data-lang="perl"><span class="nv">$</span> <span class="nv">cat</span> <span class="n">foo</span><span class="o">.</span><span class="n">pl</span>
+
+<span class="nv">$a</span> <span class="o">=</span> <span class="s">&#39;abc&#39;</span><span class="p">;</span> <span class="nv">$a</span> <span class="o">=</span> <span class="nv">$a</span> <span class="o">+</span> <span class="mi">1</span><span class="p">;</span>
+<span class="nv">$b</span> <span class="o">=</span> <span class="s">&#39;abc&#39;</span><span class="p">;</span> <span class="nv">$b</span> <span class="o">+=</span> <span class="mi">1</span><span class="p">;</span>
+<span class="nv">$c</span> <span class="o">=</span> <span class="s">&#39;abc&#39;</span><span class="p">;</span> <span class="nv">$c</span><span class="o">++</span><span class="p">;</span>
+
+<span class="k">print</span> <span class="nb">join</span> <span class="s">&quot;, &quot;</span><span class="p">,</span> <span class="p">(</span> <span class="nv">$a</span><span class="p">,</span> <span class="nv">$b</span><span class="p">,</span> <span class="nv">$c</span> <span class="p">);</span>
+
+<span class="nv">$</span> <span class="nv">perl</span> <span class="o">-</span><span class="n">l</span> <span class="n">foo</span><span class="o">.</span><span class="n">pl</span>
+
+<span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="n">abd</span>
+</code></pre></div>
+<p>注意：你必须使用 <code>++</code> 操作符。在上述示例中，字符串<code>abc</code>被转换成
+<em>0</em>，然后再自增。</p>
+
+<h3>利用 <code>heredocs</code> 创建长字符串</h3>
+
+<p>Heredocs 允许连续文本，直到遇到下一个标记。使用内插，除非标记在单引号内。</p>
+<div class="highlight"><pre><code class="language-perl" data-lang="perl"><span class="k">my</span> <span class="nv">$page</span> <span class="o">=</span> <span class="s">&lt;&lt;HERE;</span>
+<span class="s">&lt;html&gt;</span>
+<span class="s">    &lt;head&gt;&lt;title&gt;$title&lt;/title&gt;&lt;/head&gt;</span>
+<span class="s">    &lt;body&gt;This is a page.&lt;/body&gt;</span>
+<span class="s">&lt;/html&gt;</span>
+<span class="s">HERE</span>
+</code></pre></div>
+
+<div id="post-nav" class="clearfix">
+  
+  <a rel="prev" href="/documentation.html">&larr;文档</a>
+  
+  
+  <a rel="next" href="/numbers.html" style="float:right;">数字&rarr;</a>
+  
+</div>
+
+            </div>
+            <div id="footer">
+                follow me: <a href="https://twitter.com/xuxiaodong">twitter</a> / <a href="https://github.com/xuxiaodong">github</a> / <a href="http://www.linkedin.com/pub/xiaodong-xu/62/319/7">linkedin</a>
+            </div>
+        </div>
+    </body>
+</html>

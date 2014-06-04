@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        
+        <title>Perl 程序员应该知道的事: POD 格式</title>
+        
+        <link rel="stylesheet" href="//ty.yukir.net/ty.css">
+        <link rel="stylesheet" type="text/css" href="css/syntax.css">
+        <link rel="stylesheet" type="text/css" href="css/hgtip/style.css">
+    </head>
+    <body>
+        <div id="main-wrap" class="ty ty-wide">
+            <div id="header">
+                <h1><a href="" title="Perl 程序员应该知道的事">Perl 程序员应该知道的事</a></h1>
+            </div>
+            <div id="content">
+                
+<h2><a href="http://perl101.org/pod.html" title="External link">POD 格式</a></h2>
+
+<p id="tip-info">October 27, 2013 @ 08:48 PM</p>
+<h3>内联文档及格式</h3>
+
+<p>POD 允许你在 Perl 代码中使用标记来创建文档。如果你见过 Javadoc 或 PHPdoc，
+它跟它们很相像。</p>
+
+<p>POD 是语言的一部分，并非额外的规范。</p>
+
+<h3>使用 <code>=head1</code> 和 <code>=head2</code> 创建标题</h3>
+<div class="highlight"><pre><code class="language-perl" data-lang="perl"><span class="o">=</span><span class="n">head1</span> <span class="n">MOST</span> <span class="n">IMPORTANT</span>
+
+<span class="n">Blah</span> <span class="n">blah</span>
+
+<span class="o">=</span><span class="n">head2</span> <span class="n">Subheading</span>
+
+<span class="n">blah</span> <span class="n">blah</span>
+
+<span class="o">=</span><span class="n">head2</span> <span class="n">Subhading</span>
+
+<span class="n">blah</span> <span class="n">blah</span>
+</code></pre></div>
+<h3>创建无序列表</h3>
+
+<p>要创建这样的列表：</p>
+
+<ul>
+<li>Wango</li>
+<li>Tango</li>
+<li>Fandango</li>
+</ul>
+
+<p>使用：</p>
+<div class="highlight"><pre><code class="language-perl" data-lang="perl"><span class="o">=</span><span class="n">over</span>
+
+<span class="o">=</span><span class="n">item</span> <span class="o">*</span> <span class="n">Wango</span>
+
+<span class="o">=</span><span class="n">item</span> <span class="o">*</span> <span class="n">Tango</span>
+
+<span class="o">=</span><span class="n">item</span> <span class="o">*</span> <span class="n">Fandango</span>
+
+<span class="o">=</span><span class="n">back</span>
+</code></pre></div>
+<h3>创建有序列表</h3>
+
+<p>要创建下面的列表：</p>
+
+<ol>
+<li>Visit perl101.org</li>
+<li>???</li>
+<li>Profit!</li>
+</ol>
+
+<p>使用：</p>
+<div class="highlight"><pre><code class="language-perl" data-lang="perl"><span class="o">=</span><span class="n">over</span>
+
+<span class="o">=</span><span class="n">item</span> <span class="mi">1</span> <span class="n">Visit</span> <span class="n">perl101</span><span class="o">.</span><span class="n">org</span>
+
+<span class="o">=</span><span class="n">item</span> <span class="mi">2</span> <span class="p">???</span>
+
+<span class="o">=</span><span class="n">item</span> <span class="mi">3</span> <span class="n">Profit</span><span class="o">!</span>
+
+<span class="o">=</span><span class="n">back</span>
+</code></pre></div>
+<h3>使用内联标记样式</h3>
+
+<p>POD 用 <code>B&lt;&gt;</code>、<code>I&lt;&gt;</code> 及 <code>C&lt;&gt;</code> 分别表示粗体、斜体、代码。</p>
+<div class="highlight"><pre><code class="language-perl" data-lang="perl"><span class="n">B</span><span class="o">&lt;</span><span class="n">This</span> <span class="n">is</span> <span class="n">bolded</span><span class="o">&gt;</span>
+
+<span class="n">I</span><span class="o">&lt;</span><span class="n">This</span> <span class="n">is</span> <span class="n">italics</span><span class="o">&gt;</span>
+
+<span class="n">C</span><span class="o">&lt;</span><span class="n">This</span> <span class="n">is</span> <span class="n">code</span><span class="o">&gt;</span>
+</code></pre></div>
+<p>标记格式能够嵌套。</p>
+
+<h3>使用 <code>L&lt;&gt;</code> 超链接</h3>
+
+<p><code>L&lt;&gt;</code> 既可以链接文档中的关键字，如 <code>L&lt;Methods&gt;</code>；也可以链接 URL，如
+<code>L&lt;http://search.cpan.org</code>。</p>
+
+<h3>段落模式 vs. 字面块</h3>
+
+<p>段落会自动换行，并由至少一个空行分隔。</p>
+<div class="highlight"><pre><code class="language-perl" data-lang="perl"><span class="n">A</span> <span class="n">literal</span> <span class="n">block</span> <span class="n">is</span> <span class="n">indented</span> <span class="n">at</span> <span class="n">least</span> <span class="n">one</span> <span class="n">space</span>
+<span class="ow">and</span> <span class="n">does</span> <span class="ow">not</span>
+<span class="n">get</span>
+<span class="n">wrapped</span><span class="o">.</span>
+</code></pre></div>
+<p>这来自于：</p>
+<div class="highlight"><pre><code class="language-perl" data-lang="perl"><span class="n">Everything</span> <span class="n">in</span> <span class="n">a</span> <span class="n">paragraph</span> <span class="n">word</span><span class="o">-</span><span class="n">wraps</span> <span class="n">automatically</span><span class="o">.</span>  <span class="n">A</span> <span class="n">paragraph</span>
+<span class="n">is</span> <span class="n">separated</span> <span class="n">by</span> <span class="n">at</span> <span class="n">least</span> <span class="n">one</span> <span class="n">blank</span> <span class="n">line</span><span class="o">.</span>
+
+    <span class="n">A</span> <span class="n">literal</span> <span class="n">block</span> <span class="n">is</span> <span class="n">indented</span> <span class="n">at</span> <span class="n">least</span> <span class="n">one</span> <span class="n">space</span>
+    <span class="ow">and</span> <span class="n">does</span> <span class="ow">not</span>
+    <span class="n">get</span>
+    <span class="n">wrapped</span><span class="o">.</span>
+</code></pre></div>
+<h3>POD 不会使程序运行变慢</h3>
+
+<p>它将在编译时被去除。</p>
+
+
+<div id="post-nav" class="clearfix">
+  
+  <a rel="prev" href="/subroutines.html">&larr;子例程</a>
+  
+  
+  <a rel="next" href="/debugging.html" style="float:right;">调试&rarr;</a>
+  
+</div>
+
+            </div>
+            <div id="footer">
+                follow me: <a href="https://twitter.com/xuxiaodong">twitter</a> / <a href="https://github.com/xuxiaodong">github</a> / <a href="http://www.linkedin.com/pub/xiaodong-xu/62/319/7">linkedin</a>
+            </div>
+        </div>
+    </body>
+</html>

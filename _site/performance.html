@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        
+        <title>Perl 程序员应该知道的事: 性能</title>
+        
+        <link rel="stylesheet" href="//ty.yukir.net/ty.css">
+        <link rel="stylesheet" type="text/css" href="css/syntax.css">
+        <link rel="stylesheet" type="text/css" href="css/hgtip/style.css">
+    </head>
+    <body>
+        <div id="main-wrap" class="ty ty-wide">
+            <div id="header">
+                <h1><a href="" title="Perl 程序员应该知道的事">Perl 程序员应该知道的事</a></h1>
+            </div>
+            <div id="content">
+                
+<h2><a href="http://perl101.org/performance.html" title="External link">性能</a></h2>
+
+<p id="tip-info">October 29, 2013 @ 09:26 AM</p>
+<p>Perl 让你干想干的事，包括很慢或内存消耗这样的事。此处将告诉你如何避免。</p>
+
+<h3>使用 <code>while</code> 而非 <code>for</code> 来迭代整个文件</h3>
+
+<p>代替读取文件的所有行并使用 <code>for</code> 处理数组，使用 <code>while</code> 一次仅读取一行。</p>
+
+<p>这两个循环的功能相同：</p>
+<div class="highlight"><pre><code class="language-perl" data-lang="perl"><span class="k">for</span> <span class="p">(</span> <span class="o">&lt;&gt;</span> <span class="p">)</span> <span class="p">{</span>
+    <span class="c1"># do something</span>
+<span class="p">}</span>
+
+<span class="k">while</span> <span class="p">(</span> <span class="o">&lt;&gt;</span> <span class="p">)</span> <span class="p">{</span>
+    <span class="c1"># do something</span>
+<span class="p">}</span>
+</code></pre></div>
+<p>差异是 <code>for</code> 将整个文件读到临时数组，而 <code>while</code> 一次读一行。对于小文件，
+这可能不重要。但对于更大的文件，它可能吃掉你的所有可用内存。</p>
+
+<p>在这种情况下使用 <code>while</code> 是一种好实践。</p>
+
+<h3>避免不必要的引起和字串化</h3>
+
+<p>除非绝对必要，不要引起大字符串：</p>
+<div class="highlight"><pre><code class="language-perl" data-lang="perl"><span class="k">my</span> <span class="nv">$copy</span> <span class="o">=</span> <span class="s">&quot;$large_string&quot;</span><span class="p">;</span>
+</code></pre></div>
+<p>这将创建两个 <code>$large_string</code> 的拷贝（一个是 <code>$copy</code>，而另一个是引起）。
+然而：</p>
+<div class="highlight"><pre><code class="language-perl" data-lang="perl"><span class="k">my</span> <span class="nv">$copy</span> <span class="o">=</span> <span class="nv">$large_string</span><span class="p">;</span>
+</code></pre></div>
+<p>仅创建一个拷贝。</p>
+
+<p>对于字串化大的数组也是一样：</p>
+<div class="highlight"><pre><code class="language-perl" data-lang="perl"><span class="p">{</span>
+    <span class="nb">local</span> <span class="vg">$,</span> <span class="o">=</span> <span class="s">&quot;\n&quot;</span><span class="p">;</span>
+    <span class="k">print</span> <span class="nv">@big_array</span><span class="p">;</span>
+<span class="p">}</span>
+</code></pre></div>
+<p>这比下面的代码更内存高效：</p>
+<div class="highlight"><pre><code class="language-perl" data-lang="perl"><span class="k">print</span> <span class="nb">join</span> <span class="s">&quot;\n&quot;</span><span class="p">,</span> <span class="nv">@big_array</span><span class="p">;</span>
+</code></pre></div>
+<p>或：</p>
+<div class="highlight"><pre><code class="language-perl" data-lang="perl"><span class="p">{</span>
+    <span class="nb">local</span> <span class="vg">$&quot;</span> <span class="o">=</span> <span class="s">&quot;\n&quot;</span><span class="p">;</span>
+    <span class="k">print</span> <span class="s">&quot;@big_array&quot;</span><span class="p">;</span>
+<span class="p">}</span>
+</code></pre></div>
+
+<div id="post-nav" class="clearfix">
+  
+  <a rel="prev" href="/style.html">&larr;风格</a>
+  
+  
+  <a rel="next" href="/traps.html" style="float:right;">陷阱&rarr;</a>
+  
+</div>
+
+            </div>
+            <div id="footer">
+                follow me: <a href="https://twitter.com/xuxiaodong">twitter</a> / <a href="https://github.com/xuxiaodong">github</a> / <a href="http://www.linkedin.com/pub/xiaodong-xu/62/319/7">linkedin</a>
+            </div>
+        </div>
+    </body>
+</html>

@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        
+        <title>Perl 程序员应该知道的事: 特殊变量</title>
+        
+        <link rel="stylesheet" href="//ty.yukir.net/ty.css">
+        <link rel="stylesheet" type="text/css" href="css/syntax.css">
+        <link rel="stylesheet" type="text/css" href="css/hgtip/style.css">
+    </head>
+    <body>
+        <div id="main-wrap" class="ty ty-wide">
+            <div id="header">
+                <h1><a href="" title="Perl 程序员应该知道的事">Perl 程序员应该知道的事</a></h1>
+            </div>
+            <div id="content">
+                
+<h2><a href="http://perl101.org/special-variables.html" title="External link">特殊变量</a></h2>
+
+<p id="tip-info">October 28, 2013 @ 02:05 PM</p>
+<h3>$_</h3>
+
+<p><code>$_</code> 是默认变量。它常用于内置函数的默认参数。</p>
+<div class="highlight"><pre><code class="language-perl" data-lang="perl"><span class="k">while</span> <span class="p">(</span> <span class="o">&lt;&gt;</span> <span class="p">)</span> <span class="p">{</span>  <span class="c1"># Read a line into $_</span>
+    <span class="k">print</span> <span class="nb">lc</span><span class="p">;</span>   <span class="c1"># print lc($_)</span>
+<span class="p">}</span>
+</code></pre></div>
+<p>这与下列代码相同：</p>
+<div class="highlight"><pre><code class="language-perl" data-lang="perl"><span class="k">while</span> <span class="p">(</span> <span class="nv">$it</span> <span class="o">=</span> <span class="o">&lt;&gt;</span> <span class="p">)</span> <span class="p">{</span>
+    <span class="k">print</span> <span class="nb">lc</span><span class="p">(</span><span class="nv">$it</span><span class="p">);</span>
+<span class="p">}</span>
+</code></pre></div>
+<h3>$0</h3>
+
+<p><code>$0</code> 包含执行程序的名称，正如给 Shell 的一样。如果程序直接通过 Perl
+解释器执行，那么 <code>$0</code> 包含文件名称。</p>
+<div class="highlight"><pre><code class="language-perl" data-lang="perl"><span class="nv">$</span> <span class="nv">cat</span> <span class="n">file</span><span class="o">.</span><span class="n">pl</span>
+<span class="c1">#!/usr/bin/perl</span>
+<span class="k">print</span> <span class="nv">$0</span><span class="p">,</span> <span class="s">&quot;\n&quot;</span><span class="p">;</span>
+<span class="nv">$</span> <span class="err">./</span><span class="nv">file</span><span class="o">.</span><span class="n">pl</span>
+<span class="n">file</span><span class="o">.</span><span class="n">pl</span>
+<span class="nv">$</span> <span class="nv">perl</span> <span class="n">file</span><span class="o">.</span><span class="n">pl</span>
+<span class="n">file</span><span class="o">.</span><span class="n">pl</span>
+<span class="nv">$</span> <span class="nv">perl</span> <span class="o">./</span><span class="n">file</span><span class="o">.</span><span class="n">pl</span>
+<span class="o">./</span><span class="n">file</span><span class="o">.</span><span class="n">pl</span>
+<span class="nv">$</span> <span class="nv">cat</span> <span class="n">file</span><span class="o">.</span><span class="n">pl</span> <span class="o">|</span> <span class="n">perl</span>
+<span class="o">-</span>
+</code></pre></div>
+<p><code>$0</code> 是 C 程序员期望从 <code>argv</code> 数组找到的第一个元素。</p>
+
+<h3>@ARGV</h3>
+
+<p><code>@ARGV</code> 包含给程序的参数，顺序与 Shell 中一样。</p>
+<div class="highlight"><pre><code class="language-perl" data-lang="perl"><span class="nv">$</span> <span class="nv">perl</span> <span class="o">-</span><span class="n">e</span> <span class="s">&#39;print join( &quot;, &quot;, @ARGV), &quot;\n&quot;&#39;</span> <span class="mi">1</span> <span class="mi">2</span> <span class="mi">3</span>
+<span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span>
+<span class="nv">$</span> <span class="nv">perl</span> <span class="o">-</span><span class="n">e</span> <span class="s">&#39;print join( &quot;, &quot;, @ARGV), &quot;\n&quot;&#39;</span> <span class="mi">1</span> <span class="s">&quot;2 3&quot;</span> <span class="mi">4</span>
+<span class="mi">1</span><span class="p">,</span> <span class="mi">2</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">4</span>
+</code></pre></div>
+<p>C 程序员可能会搞混，因为 <code>$ARGV[0]</code> 是他们的 <code>argv[1]</code>。不要犯这样的错。</p>
+
+<h3>@INC</h3>
+
+<p><code>@INC</code> 包含 Perl 搜索模块的所有路径。</p>
+
+<p>Perl 程序员通过后置或前置到 <code>@INC</code> 添加库路径。眼下，使用 <code>use lib</code> 代替。
+下面的代码等效：</p>
+<div class="highlight"><pre><code class="language-perl" data-lang="perl"><span class="k">BEGIN</span> <span class="p">{</span> <span class="nb">unshift</span> <span class="nv">@INC</span><span class="p">,</span> <span class="s">&quot;local/lib&quot;</span> <span class="p">};</span>
+
+<span class="k">use</span> <span class="n">lib</span> <span class="s">&quot;local/lib&quot;</span><span class="p">;</span>
+</code></pre></div>
+<h3>%ENV</h3>
+
+<p><code>%ENV</code> 包含当前环境的拷贝。该环境由 Perl 创建的子 Shell 所给予。</p>
+
+<p>这对 <code>taint</code> 模式很重要，<code>%ENV</code> 具有能修改 Shell 行为的内容。正因如此，
+perlsec 推荐在 <code>taint</code> 模式执行命令时使用下列代码：</p>
+<div class="highlight"><pre><code class="language-perl" data-lang="perl"><span class="nv">$ENV</span><span class="p">{</span><span class="s">&#39;PATH&#39;</span><span class="p">}</span> <span class="o">=</span> <span class="s">&#39;/bin:/usr/bin&#39;</span><span class="p">;</span> <span class="c1"># change to your real path</span>
+<span class="nb">delete</span> <span class="nv">@ENV</span><span class="p">{</span><span class="s">&#39;IFS&#39;</span><span class="p">,</span> <span class="s">&#39;CDPATH&#39;</span><span class="p">,</span> <span class="s">&#39;ENV&#39;</span><span class="p">,</span> <span class="s">&#39;BASH_ENV&#39;</span><span class="p">};</span>
+</code></pre></div>
+<h3>%SIG</h3>
+
+<p>Perl 具有丰富的信号处理能力。使用 <code>%SIG</code> 变量，你能够在当信号发送给运行
+的进程时执行任意子例程。</p>
+
+<p>如果你有耗时进程，这将特别有用。通过发送信号（通常是 <code>SIGHUP</code>）来重载配置
+，你不必启动和停止进程。</p>
+
+<p>通过分别赋值 <code>$SIG{__DIE__}</code> 和 <code>$SIG{__WARN__}</code>，你也可以更改 <code>die</code> 和 <code>warn</code>
+的行为。</p>
+
+<h3>&lt;&gt;</h3>
+
+<p>钻石操作符 <code>&lt;&gt;</code> 用于程序期望的输入时，而不用关心它如何到达。</p>
+
+<p>如果程序收到任何参数，它们将分成文件名及其内容发送给 <code>&lt;&gt;</code>。否则，使用标准
+输入（<code>STDIN</code>）。</p>
+
+<p><code>&lt;&gt;</code> 对于过滤程序特别有用。</p>
+
+<h3>&lt;DATA&gt; 和__DATA__</h3>
+
+<p>如果程序包含自身为一行的魔法标记 <code>__DATA__</code>，那么它下面的任何东东均可通过
+魔法 <code>&lt;DATA&gt;</code> 句柄为程序所用。</p>
+
+<p>如果你想在程序中包含数据，但又想与主程序逻辑分开，那么这将特别有用。</p>
+
+<h3>$!</h3>
+
+<p>当使用 <code>system</code> 执行命令时，如果命令返回非真状态，那么 <code>$!</code> 将为真。否则，
+可能未被执行。<code>$!</code> 将包含出错消息。</p>
+
+<h3>$@</h3>
+
+<p>如果使用 <code>eval</code>，那么 <code>$@</code> 将包含 <code>eval</code> 所抛出的语法错误。</p>
+
+
+<div id="post-nav" class="clearfix">
+  
+  <a rel="prev" href="/objects.html">&larr;对象、模块及包</a>
+  
+  
+  <a rel="next" href="/command-line-switches.html" style="float:right;">命令行选项&rarr;</a>
+  
+</div>
+
+            </div>
+            <div id="footer">
+                follow me: <a href="https://twitter.com/xuxiaodong">twitter</a> / <a href="https://github.com/xuxiaodong">github</a> / <a href="http://www.linkedin.com/pub/xiaodong-xu/62/319/7">linkedin</a>
+            </div>
+        </div>
+    </body>
+</html>

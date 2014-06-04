@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        
+        <title>Perl 程序员应该知道的事: 陷阱</title>
+        
+        <link rel="stylesheet" href="//ty.yukir.net/ty.css">
+        <link rel="stylesheet" type="text/css" href="css/syntax.css">
+        <link rel="stylesheet" type="text/css" href="css/hgtip/style.css">
+    </head>
+    <body>
+        <div id="main-wrap" class="ty ty-wide">
+            <div id="header">
+                <h1><a href="" title="Perl 程序员应该知道的事">Perl 程序员应该知道的事</a></h1>
+            </div>
+            <div id="content">
+                
+<h2><a href="http://perl101.org/traps.html" title="External link">陷阱</a></h2>
+
+<p id="tip-info">October 29, 2013 @ 09:37 AM</p>
+<h3>while (&lt;STDIN&gt;)</h3>
+
+<p>一定要小心这点。如果你不知怎么回事地得到了假值（如：空行），你的文件可能
+停止处理了。假如你在处理文件读取（除非修改了 <code>$/</code>），这种事一般不会发生，
+但却可能发生。</p>
+
+<p>你更喜欢这样运行：</p>
+<div class="highlight"><pre><code class="language-perl" data-lang="perl"><span class="k">while</span> <span class="p">(</span><span class="nb">readdir</span><span class="p">(</span><span class="n">DIR</span><span class="p">))</span> <span class="p">{</span>
+</code></pre></div>
+<p>假设你有文件名为 <code>0</code> 的话，那么程序将停止，且不会继续处理文件。</p>
+
+<p>更合适的 <code>while</code> 循环看起来像这样：</p>
+<div class="highlight"><pre><code class="language-perl" data-lang="perl"><span class="k">while</span> <span class="p">(</span> <span class="nb">defined</span><span class="p">(</span> <span class="k">my</span> <span class="nv">$line</span> <span class="o">=</span> <span class="sr">&lt;STDIN&gt;</span> <span class="p">)</span> <span class="p">)</span> <span class="p">{</span>
+<span class="k">while</span> <span class="p">(</span> <span class="nb">defined</span><span class="p">(</span> <span class="k">my</span> <span class="nv">$file</span> <span class="o">=</span> <span class="nb">readdir</span><span class="p">(</span><span class="n">DIR</span><span class="p">)</span> <span class="p">)</span> <span class="p">)</span> <span class="p">{</span>
+</code></pre></div>
+
+<div id="post-nav" class="clearfix">
+  
+  <a rel="prev" href="/performance.html">&larr;性能</a>
+  
+  
+  <a rel="next" href="/how-do-i.html" style="float:right;">如何做...？&rarr;</a>
+  
+</div>
+
+            </div>
+            <div id="footer">
+                follow me: <a href="https://twitter.com/xuxiaodong">twitter</a> / <a href="https://github.com/xuxiaodong">github</a> / <a href="http://www.linkedin.com/pub/xiaodong-xu/62/319/7">linkedin</a>
+            </div>
+        </div>
+    </body>
+</html>

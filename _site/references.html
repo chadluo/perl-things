@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        
+        <title>Perl 程序员应该知道的事: 引用</title>
+        
+        <link rel="stylesheet" href="//ty.yukir.net/ty.css">
+        <link rel="stylesheet" type="text/css" href="css/syntax.css">
+        <link rel="stylesheet" type="text/css" href="css/hgtip/style.css">
+    </head>
+    <body>
+        <div id="main-wrap" class="ty ty-wide">
+            <div id="header">
+                <h1><a href="" title="Perl 程序员应该知道的事">Perl 程序员应该知道的事</a></h1>
+            </div>
+            <div id="content">
+                
+<h2><a href="http://perl101.org/references.html" title="External link">引用</a></h2>
+
+<p id="tip-info">October 28, 2013 @ 01:24 PM</p>
+<h3>引用是引用其他变量的标量</h3>
+
+<p>引用像 C 中引用其他变量的指针。使用 <code>\</code> 操作符创建引用。</p>
+<div class="highlight"><pre><code class="language-perl" data-lang="perl"><span class="k">my</span> <span class="nv">$sref</span> <span class="o">=</span> <span class="o">\</span><span class="nv">$scalar</span><span class="p">;</span>
+<span class="k">my</span> <span class="nv">$aref</span> <span class="o">=</span> <span class="o">\</span><span class="nv">@array</span><span class="p">;</span>
+<span class="k">my</span> <span class="nv">$href</span> <span class="o">=</span> <span class="o">\</span><span class="nv">%hash</span><span class="p">;</span>
+<span class="k">my</span> <span class="nv">$cref</span> <span class="o">=</span> <span class="o">\&amp;</span><span class="n">subroutine</span><span class="p">;</span>
+</code></pre></div>
+<p>引用指向的事物即其所指。</p>
+
+<p>使用合适的印记解引用，首选使用花括号。</p>
+<div class="highlight"><pre><code class="language-perl" data-lang="perl"><span class="k">my</span> <span class="nv">$other_scalar</span> <span class="o">=</span> <span class="nv">$</span><span class="p">{</span><span class="nv">$sref</span><span class="p">};</span>
+<span class="k">my</span> <span class="nv">@other_array</span>  <span class="o">=</span> <span class="nv">@</span><span class="p">{</span><span class="nv">$aref</span><span class="p">};</span>
+<span class="k">my</span> <span class="nv">%other_hash</span>   <span class="o">=</span> <span class="nv">%</span><span class="p">{</span><span class="nv">$href</span><span class="p">};</span>
+<span class="o">&amp;</span><span class="p">{</span><span class="nv">$cref</span><span class="p">}</span> <span class="c1"># Call the referent.</span>
+</code></pre></div>
+<h3>用箭头符解引用更容易</h3>
+
+<p>要访问数组和哈希引用，使用 <code>-&gt;</code> 操作符。</p>
+<div class="highlight"><pre><code class="language-perl" data-lang="perl"><span class="k">my</span> <span class="nv">$stooge</span> <span class="o">=</span> <span class="nv">$aref</span><span class="o">-&gt;</span><span class="p">[</span><span class="mi">1</span><span class="p">];</span>
+<span class="k">my</span> <span class="nv">$stooge</span> <span class="o">=</span> <span class="nv">$href</span><span class="o">-&gt;</span><span class="p">{</span><span class="n">Curly</span><span class="p">};</span>
+</code></pre></div>
+<h3>ref vs. isa</h3>
+
+<ul>
+<li>一个引用属于一个类</li>
+<li>你可以使用 <code>ref</code> 查检类</li>
+<li>一个对象引用能从其他类继承</li>
+<li>你可以使用 <code>isa</code> 来询问一个对象是否继承自一个类</li>
+<li>没有好理由不要用 <code>ref</code></li>
+<li><code>isa</code> 是 <em>UNIVERSAL</em> 包的一部分，因此你可以在对象上调用它</li>
+</ul>
+<div class="highlight"><pre><code class="language-perl" data-lang="perl"><span class="k">my</span> <span class="nv">$mech</span> <span class="o">=</span> <span class="nn">WWW::</span><span class="n">Mechanize</span><span class="o">-&gt;</span><span class="k">new</span><span class="p">;</span>
+<span class="k">print</span> <span class="s">&quot;ok\n&quot;</span> <span class="k">if</span> <span class="nv">$mech</span><span class="o">-&gt;</span><span class="n">isa</span><span class="p">(</span><span class="s">&#39;LWP::UserAgent&#39;</span><span class="p">);</span>
+</code></pre></div>
+<h3>引用匿名子例程</h3>
+
+<p>子例程能被赋给变量，并被调用，以允许代码引用被传递及使用。这将十分有用，
+比如编写需要执行所提供代码的子例程。</p>
+<div class="highlight"><pre><code class="language-perl" data-lang="perl"><span class="k">my</span> <span class="nv">$casefix</span> <span class="o">=</span> <span class="k">sub </span><span class="p">{</span> <span class="k">return</span> <span class="nb">ucfirst</span> <span class="nb">lc</span> <span class="nv">$_</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="p">};</span>
+
+<span class="k">my</span> <span class="nv">$color</span> <span class="o">=</span> <span class="nv">$casefix</span><span class="o">-&gt;</span><span class="p">(</span><span class="s">&quot;rED&quot;</span><span class="p">);</span>
+<span class="k">print</span> <span class="s">&quot;Color: $color\n&quot;</span><span class="p">;</span> <span class="c1"># prints Red</span>
+</code></pre></div>
+
+<div id="post-nav" class="clearfix">
+  
+  <a rel="prev" href="/constructs.html">&larr;构造</a>
+  
+  
+  <a rel="next" href="/objects.html" style="float:right;">对象、模块及包&rarr;</a>
+  
+</div>
+
+            </div>
+            <div id="footer">
+                follow me: <a href="https://twitter.com/xuxiaodong">twitter</a> / <a href="https://github.com/xuxiaodong">github</a> / <a href="http://www.linkedin.com/pub/xiaodong-xu/62/319/7">linkedin</a>
+            </div>
+        </div>
+    </body>
+</html>

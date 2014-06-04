@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        
+        <title>Perl 程序员应该知道的事: 数字</title>
+        
+        <link rel="stylesheet" href="//ty.yukir.net/ty.css">
+        <link rel="stylesheet" type="text/css" href="css/syntax.css">
+        <link rel="stylesheet" type="text/css" href="css/hgtip/style.css">
+    </head>
+    <body>
+        <div id="main-wrap" class="ty ty-wide">
+            <div id="header">
+                <h1><a href="" title="Perl 程序员应该知道的事">Perl 程序员应该知道的事</a></h1>
+            </div>
+            <div id="content">
+                
+<h2><a href="http://perl101.org/numbers.html" title="External link">数字</a></h2>
+
+<p id="tip-info">October 25, 2013 @ 02:53 PM</p>
+<h3>小心地测试浮点数的相等性</h3>
+
+<p>在计算中过度相信 IEEE 浮点数是一种错误。例如：</p>
+<div class="highlight"><pre><code class="language-perl" data-lang="perl"><span class="k">print</span> <span class="s">&quot;---\n&quot;</span><span class="p">;</span>
+<span class="k">print</span> <span class="s">&quot;A: &quot;</span><span class="p">,</span> <span class="mf">2.4</span><span class="p">,</span> <span class="s">&quot;\n&quot;</span><span class="p">;</span>
+<span class="k">print</span> <span class="s">&quot;B: &quot;</span><span class="p">,</span> <span class="mf">0.2</span><span class="o">*</span><span class="mi">12</span><span class="p">,</span> <span class="s">&quot;\n&quot;</span><span class="p">;</span>
+<span class="k">if</span> <span class="p">(</span> <span class="mf">0.2</span><span class="o">*</span><span class="mi">12</span> <span class="o">==</span> <span class="mf">2.4</span> <span class="p">)</span> <span class="p">{</span>
+    <span class="k">print</span> <span class="s">&quot;These are equal.\n&quot;</span><span class="p">;</span>
+<span class="p">}</span>
+<span class="k">else</span> <span class="p">{</span>
+    <span class="k">print</span> <span class="s">&quot;These are not equal.\n&quot;</span><span class="p">;</span>
+<span class="p">}</span>
+
+<span class="n">A:</span> <span class="mf">2.4</span>
+<span class="n">B:</span> <span class="mf">2.4</span>
+<span class="n">These</span> <span class="n">are</span> <span class="ow">not</span> <span class="n">equal</span><span class="o">.</span>
+</code></pre></div>
+<p>这样的结果是由于这个事实： <em>0.2</em> (1/5) 在 IEEE 空间无法被表示为二进制分数。</p>
+
+<p>因此，如果你想要检查浮点数的相等性，那么可以使用 <code>sprintf</code> 或类似
+的东东。</p>
+
+<p>参阅 <a href="http://perldoc.perl.org/perlfaq4.html">http://perldoc.perl.org/perlfaq4.html</a> 了解细节。</p>
+
+<h3>数字舍入</h3>
+
+<p>不要使用 <code>int()</code> 来做数字舍入，它只会返回整数部分。<code>sprintf()</code> 或
+<code>printf()</code> 一般够用了。</p>
+<div class="highlight"><pre><code class="language-perl" data-lang="perl"><span class="nb">printf</span><span class="p">(</span><span class="s">&quot;%.3f&quot;</span><span class="p">,</span> <span class="mf">3.1415926535</span><span class="p">);</span>   <span class="c1"># prints 3.142</span>
+</code></pre></div>
+<p>如果你需要向下或向上舍入，那么可以使用 <a href="https://metacpan.org/module/POSIX">POSIX</a> 模块所提供的 <code>ceil()</code>
+和 <code>floor()</code> 函数。其中，<code>ceil()</code> 是向上舍入，而 <code>floor()</code> 是向下舍入。</p>
+<div class="highlight"><pre><code class="language-perl" data-lang="perl"><span class="k">use</span> <span class="n">POSIX</span><span class="p">;</span>
+<span class="k">my</span> <span class="nv">$ceil</span>   <span class="o">=</span> <span class="n">ceil</span><span class="p">(</span><span class="mf">3.5</span><span class="p">);</span>   <span class="c1"># 4</span>
+<span class="k">my</span> <span class="nv">$floor</span>  <span class="o">=</span> <span class="n">floor</span><span class="p">(</span><span class="mf">3.5</span><span class="p">);</span>  <span class="c1"># 3</span>
+</code></pre></div>
+
+<div id="post-nav" class="clearfix">
+  
+  <a rel="prev" href="/strings.html">&larr;字符串</a>
+  
+  
+  <a rel="next" href="/arrays.html" style="float:right;">数组&rarr;</a>
+  
+</div>
+
+            </div>
+            <div id="footer">
+                follow me: <a href="https://twitter.com/xuxiaodong">twitter</a> / <a href="https://github.com/xuxiaodong">github</a> / <a href="http://www.linkedin.com/pub/xiaodong-xu/62/319/7">linkedin</a>
+            </div>
+        </div>
+    </body>
+</html>

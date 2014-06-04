@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        
+        <title>Perl 程序员应该知道的事: 风格</title>
+        
+        <link rel="stylesheet" href="//ty.yukir.net/ty.css">
+        <link rel="stylesheet" type="text/css" href="css/syntax.css">
+        <link rel="stylesheet" type="text/css" href="css/hgtip/style.css">
+    </head>
+    <body>
+        <div id="main-wrap" class="ty ty-wide">
+            <div id="header">
+                <h1><a href="" title="Perl 程序员应该知道的事">Perl 程序员应该知道的事</a></h1>
+            </div>
+            <div id="content">
+                
+<h2><a href="http://perl101.org/style.html" title="External link">风格</a></h2>
+
+<p id="tip-info">October 29, 2013 @ 09:01 AM</p>
+<h3>camelCase 很糟</h3>
+
+<p>你曾维护过别人的代码吗？你维护过像这样的代码吗？</p>
+<div class="highlight"><pre><code class="language-perl" data-lang="perl"><span class="k">my</span> <span class="nv">$variableThatContainsData</span> <span class="o">=</span>
+    <span class="n">someSubroutineThatMucksWithData</span><span class="p">(</span> <span class="nv">$someAwfulVariable</span> <span class="p">);</span>
+</code></pre></div>
+<p>混合大小写单词在 Perl 世界被称为 <em>camelCase</em>，通常它的令人不悦之处是使
+阅读代码更难。</p>
+
+<p>甚至具有糟糕名称的代码使用下划线也能变得更可读：</p>
+<div class="highlight"><pre><code class="language-perl" data-lang="perl"><span class="k">my</span> <span class="nv">$variable_that_contains_data</span> <span class="o">=</span> 
+    <span class="n">some_subroutine_that_mucks_with_data</span><span class="p">(</span> <span class="nv">$some_awful_variable</span> <span class="p">);</span>
+</code></pre></div>
+<h3>warnings 和 strict</h3>
+
+<p>对于你希望维护、重用、及发布的任何程序，都应当具有下列代码行：</p>
+<div class="highlight"><pre><code class="language-perl" data-lang="perl"><span class="c1">#!/usr/bin/perl</span>
+
+<span class="k">use</span> <span class="n">strict</span><span class="p">;</span>
+<span class="k">use</span> <span class="n">warnings</span><span class="p">;</span>
+</code></pre></div>
+<p>启用 <code>strict</code> 使 Perl 抱怨不确定的代码结构，比如：未声明的变量、祼字、
+以及软引用等。这些警告将导致 Perl 执行失败。</p>
+<div class="highlight"><pre><code class="language-perl" data-lang="perl"><span class="c1">#!/usr/bin/perl</span>
+<span class="k">use</span> <span class="n">strict</span><span class="p">;</span>
+
+<span class="nv">$foo</span>    <span class="o">=</span> <span class="mi">4</span><span class="p">;</span>     <span class="c1"># undeclared variable error</span>
+<span class="nv">$foo</span>    <span class="o">=</span> <span class="n">Bar</span><span class="p">;</span>   <span class="c1"># bareword error</span>
+<span class="k">my</span> <span class="nv">$bat</span> <span class="o">=</span> <span class="s">&quot;foo&quot;</span><span class="p">;</span>
+<span class="k">print</span> <span class="nv">$$bat</span><span class="p">;</span>     <span class="c1"># reference error</span>
+</code></pre></div>
+<p>启用 <code>warnings</code> 使 Perl 甚至抱怨更多东东。但不像 <code>strict</code>，这些抱怨在
+一般条件下并不严重。</p>
+<div class="highlight"><pre><code class="language-perl" data-lang="perl"><span class="c1">#!/usr/bin/perl</span>
+<span class="k">use</span> <span class="n">warnings</span><span class="p">;</span>
+<span class="nv">$a</span> <span class="o">+</span> <span class="mi">0</span><span class="p">;</span>                      <span class="c1"># void context warning</span>
+                             <span class="c1"># name used once warning</span>
+                             <span class="c1"># undef warning</span>
+<span class="k">print</span> <span class="s">&quot;program continued\n&quot;</span><span class="p">;</span> <span class="c1"># prints</span>
+</code></pre></div>
+<p>如果你想要 <code>warnings</code> 变得严重，告诉它：</p>
+<div class="highlight"><pre><code class="language-perl" data-lang="perl"><span class="k">use</span> <span class="n">warnings</span> <span class="n">FATAL</span> <span class="o">=&gt;</span> <span class="s">&#39;all&#39;</span><span class="p">;</span>
+<span class="nv">$a</span> <span class="o">+</span> <span class="mi">0</span><span class="p">;</span>                      <span class="c1"># void warning and then exits</span>
+<span class="k">print</span> <span class="s">&quot;program continued\n&quot;</span><span class="p">;</span> <span class="c1"># doesn&#39;t print</span>
+</code></pre></div>
+<h3>使用 <code>perltidy</code> 格式化 Perl 源代码</h3>
+
+<p>选择何种代码风格是仁者见仁，智者见智的事情。但重要的是保持风格的一致性。
+为了使格式化 Perl 源代码更容易，你可以使用 <a href="https://metacpan.org/release/Perl-Tidy">Perl::Tidy</a> 模块随付的
+<code>perltidy</code> 工具。</p>
+
+<p>例如，使用 <em>Perl 最佳实践</em> 一书所推荐的风格来格式化源代码：</p>
+<div class="highlight"><pre><code class="language-text" data-lang="text">$ perltidy -pbp myprogram.pl -o myprogram.formated.pl
+</code></pre></div>
+
+<div id="post-nav" class="clearfix">
+  
+  <a rel="prev" href="/advanced-functions.html">&larr;高级函数</a>
+  
+  
+  <a rel="next" href="/performance.html" style="float:right;">性能&rarr;</a>
+  
+</div>
+
+            </div>
+            <div id="footer">
+                follow me: <a href="https://twitter.com/xuxiaodong">twitter</a> / <a href="https://github.com/xuxiaodong">github</a> / <a href="http://www.linkedin.com/pub/xiaodong-xu/62/319/7">linkedin</a>
+            </div>
+        </div>
+    </body>
+</html>

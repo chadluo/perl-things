@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        
+        <title>Perl 程序员应该知道的事: 对象、模块及包</title>
+        
+        <link rel="stylesheet" href="//ty.yukir.net/ty.css">
+        <link rel="stylesheet" type="text/css" href="css/syntax.css">
+        <link rel="stylesheet" type="text/css" href="css/hgtip/style.css">
+    </head>
+    <body>
+        <div id="main-wrap" class="ty ty-wide">
+            <div id="header">
+                <h1><a href="" title="Perl 程序员应该知道的事">Perl 程序员应该知道的事</a></h1>
+            </div>
+            <div id="content">
+                
+<h2><a href="http://perl101.org/objects.html" title="External link">对象、模块及包</a></h2>
+
+<p id="tip-info">October 28, 2013 @ 01:47 PM</p>
+<h3>包基础</h3>
+
+<ul>
+<li>包是方法的集合</li>
+<li>具有自己的命名空间</li>
+<li>包方法能被导出或直接调用</li>
+</ul>
+<div class="highlight"><pre><code class="language-perl" data-lang="perl"><span class="nn">Foo::</span><span class="n">bar</span><span class="p">()</span>
+<span class="n">Foo</span><span class="o">-&gt;</span><span class="n">bar</span><span class="p">()</span>
+<span class="n">bar</span><span class="p">()</span> <span class="p">(</span><span class="err">如果</span> <span class="n">Foo</span> <span class="err">已导出它</span><span class="p">)</span>
+</code></pre></div>
+<h3>模块基础</h3>
+
+<ul>
+<li>模块是包含一个或多个包的文件</li>
+<li>多数人交替使用模块和包</li>
+</ul>
+
+<h3>对象基础</h3>
+
+<ul>
+<li>对象是被 bless 的哈希引用（不必是哈希引用，但它最常见）</li>
+<li>bless 将单个类赋给对象</li>
+<li>对象可被重新 bless</li>
+</ul>
+
+<h3>1;</h3>
+
+<ul>
+<li>模块必须以真值结束</li>
+<li>不必是 1</li>
+<li>包没有相同的限制</li>
+</ul>
+
+<h3>@ISA</h3>
+
+<p>Perl 的对象继承方法使用 <code>@ISA</code> 来决定模块继承自什么类。多年前，通过直接
+修改 <code>@ISA</code> 声明继承。现在，多数程序使用 <code>base</code> 编译指令声明继承。</p>
+
+<p>下列代码是等效的：</p>
+<div class="highlight"><pre><code class="language-perl" data-lang="perl"><span class="nb">package</span> <span class="n">Foo</span><span class="p">;</span>
+<span class="nb">require</span> <span class="n">Wango</span><span class="p">;</span>
+<span class="nv">@ISA</span> <span class="o">=</span> <span class="p">(</span> <span class="s">&quot;Wango&quot;</span> <span class="p">);</span>
+
+<span class="nb">package</span> <span class="n">Foo</span><span class="p">;</span>
+<span class="k">use</span> <span class="n">base</span> <span class="s">&quot;Wango&quot;</span><span class="p">;</span>
+</code></pre></div>
+
+<div id="post-nav" class="clearfix">
+  
+  <a rel="prev" href="/references.html">&larr;引用</a>
+  
+  
+  <a rel="next" href="/special-variables.html" style="float:right;">特殊变量&rarr;</a>
+  
+</div>
+
+            </div>
+            <div id="footer">
+                follow me: <a href="https://twitter.com/xuxiaodong">twitter</a> / <a href="https://github.com/xuxiaodong">github</a> / <a href="http://www.linkedin.com/pub/xiaodong-xu/62/319/7">linkedin</a>
+            </div>
+        </div>
+    </body>
+</html>

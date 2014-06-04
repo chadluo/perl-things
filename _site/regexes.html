@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        
+        <title>Perl 程序员应该知道的事: 正则表达式</title>
+        
+        <link rel="stylesheet" href="//ty.yukir.net/ty.css">
+        <link rel="stylesheet" type="text/css" href="css/syntax.css">
+        <link rel="stylesheet" type="text/css" href="css/hgtip/style.css">
+    </head>
+    <body>
+        <div id="main-wrap" class="ty ty-wide">
+            <div id="header">
+                <h1><a href="" title="Perl 程序员应该知道的事">Perl 程序员应该知道的事</a></h1>
+            </div>
+            <div id="content">
+                
+<h2><a href="http://perl101.org/regexes.html" title="External link">正则表达式</a></h2>
+
+<p id="tip-info">October 26, 2013 @ 10:06 AM</p>
+<p>正则表达式比此处所介绍的主题要大得多，确信你理解了这些概念。对于教程，
+可以参阅 <a href="http://perldoc.perl.org/perlrequick.html">perlrequick</a> 或 <a href="http://perldoc.perl.org/perlretut.html">perlretut</a>。而权威的文档，则能够参阅
+<a href="http://perldoc.perl.org/perlre.html">perlre</a>。</p>
+
+<h3>匹配和替换返回数量</h3>
+
+<p><code>m//</code> 和 <code>s///</code> 操作符分别返回匹配或替换的数目。你既可以直接使用该数目，
+也可以检查其真值。</p>
+<div class="highlight"><pre><code class="language-perl" data-lang="perl"><span class="k">if</span> <span class="p">(</span> <span class="nv">$str</span> <span class="o">=~</span><span class="sr"> /Diggle|Shelley/</span> <span class="p">)</span> <span class="p">{</span>
+    <span class="k">print</span> <span class="s">&quot;We found Pete or Steve!\n&quot;</span><span class="p">;</span>
+<span class="p">}</span>
+
+<span class="k">if</span> <span class="p">(</span> <span class="k">my</span> <span class="nv">$n</span> <span class="o">=</span> <span class="p">(</span><span class="nv">$str</span> <span class="o">=~</span> <span class="sr">s/this/that/g</span><span class="p">)</span> <span class="p">)</span> <span class="p">{</span>
+    <span class="k">print</span> <span class="sx">qq{Replaced $n occurrence(s) of &quot;this&quot;\n}</span><span class="p">;</span>
+<span class="p">}</span>
+</code></pre></div>
+<h3>不要在未检查匹配成功的情况下使用捕获变量</h3>
+
+<p>除非匹配成功，捕获变量 <code>$1</code> 等是无效的，并且它们不会被清理。</p>
+<div class="highlight"><pre><code class="language-perl" data-lang="perl"><span class="c1"># BAD: Not checked, but at least it &quot;works&quot;.</span>
+<span class="k">my</span> <span class="nv">$str</span> <span class="o">=</span> <span class="s">&#39;Perl 101 rocks.&#39;</span><span class="p">;</span>
+<span class="nv">$str</span> <span class="o">=~</span><span class="sr"> /(\d+)/</span><span class="p">;</span>
+<span class="k">print</span> <span class="s">&quot;Number: $1&quot;</span><span class="p">;</span> <span class="c1"># Prints &quot;Number: 101&quot;;</span>
+
+<span class="c1"># WORSE: Not checked, and the result is not what you&#39;d expect</span>
+<span class="nv">$str</span> <span class="o">=~</span><span class="sr"> /(Python|Ruby)/</span><span class="p">;</span>
+<span class="k">print</span> <span class="s">&quot;Language: $1&quot;</span><span class="p">;</span> <span class="c1"># Prints &quot;Language: 101&quot;;</span>
+</code></pre></div>
+<p>你必须检查匹配的返回值：</p>
+<div class="highlight"><pre><code class="language-perl" data-lang="perl"><span class="c1"># GOOD: Check the results</span>
+<span class="k">my</span> <span class="nv">$str</span> <span class="o">=</span> <span class="s">&#39;Perl 101 rocks.&#39;</span><span class="p">;</span>
+<span class="k">if</span> <span class="p">(</span> <span class="nv">$str</span> <span class="o">=~</span><span class="sr"> /(\d+)/</span> <span class="p">)</span> <span class="p">{</span>
+    <span class="k">print</span> <span class="s">&quot;Number: $1&quot;</span><span class="p">;</span> <span class="c1"># Prints &quot;Number: 101&quot;;</span>
+<span class="p">}</span>
+
+<span class="k">if</span> <span class="p">(</span> <span class="nv">$str</span> <span class="o">=~</span><span class="sr"> /(Python|Ruby)/</span> <span class="p">)</span> <span class="p">{</span>
+    <span class="k">print</span> <span class="s">&quot;Language: $1&quot;</span><span class="p">;</span> <span class="c1"># Never gets here</span>
+<span class="p">}</span>
+</code></pre></div>
+<h3>常用匹配选项</h3>
+
+<h4><code>/i</code>：不区分大小写</h4>
+
+<h4><code>/g</code>：匹配多次</h4>
+<div class="highlight"><pre><code class="language-perl" data-lang="perl"><span class="nv">$var</span> <span class="o">=</span> <span class="s">&quot;match match match&quot;</span><span class="p">;</span>
+
+<span class="k">while</span> <span class="p">(</span><span class="nv">$var</span> <span class="o">=~</span><span class="sr"> /match/g</span><span class="p">)</span> <span class="p">{</span> <span class="nv">$a</span><span class="o">++</span><span class="p">;</span> <span class="p">}</span>
+<span class="k">print</span> <span class="s">&quot;$a\n&quot;</span><span class="p">;</span> <span class="c1"># prints 3</span>
+
+<span class="nv">$a</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+<span class="nv">$a</span><span class="o">++</span> <span class="k">foreach</span> <span class="p">(</span><span class="nv">$var</span> <span class="o">=~</span><span class="sr"> /match/g</span><span class="p">);</span>
+<span class="k">print</span> <span class="s">&quot;$a\n&quot;</span><span class="p">;</span> <span class="c1"># prints 3</span>
+</code></pre></div>
+<h4><code>/m</code>：更改 <code>^</code> 和 <code>$</code> 的意义</h4>
+
+<p>正常情况下，<code>^</code> 意为字符串的开头，而 <code>$</code> 为字符串的结尾。<code>/m</code>
+使它们分别意为行首和行尾。</p>
+<div class="highlight"><pre><code class="language-perl" data-lang="perl"><span class="nv">$str</span> <span class="o">=</span> <span class="s">&quot;one\ntwo\nthree&quot;</span><span class="p">;</span>
+<span class="nv">@a</span> <span class="o">=</span> <span class="nv">$str</span> <span class="o">=~</span><span class="sr"> /^\w+/g</span><span class="p">;</span>  <span class="c1"># @a = (&quot;one&quot;);</span>
+<span class="nv">@b</span> <span class="o">=</span> <span class="nv">$str</span> <span class="o">=~</span><span class="sr"> /^\w+/gm</span><span class="p">;</span> <span class="c1"># @b = (&quot;one&quot;,&quot;two&quot;,&quot;three&quot;)</span>
+</code></pre></div>
+<p>不管是否有 <code>/m</code>，使用 <code>\A</code> 和 <code>\z</code> 来匹配字符串的开头和结尾。<code>\Z</code>
+除了会忽略最后的换行之外，与 <code>\z</code> 相同，</p>
+
+<h4><code>/s</code>：使 <code>.</code> 也匹配换行</h4>
+<div class="highlight"><pre><code class="language-perl" data-lang="perl"><span class="nv">$str</span> <span class="o">=</span> <span class="s">&quot;one\ntwo\nthree\n&quot;</span><span class="p">;</span>
+<span class="nv">$str</span> <span class="o">=~</span><span class="sr"> /^(.{8})/s</span><span class="p">;</span>
+<span class="k">print</span> <span class="nv">$1</span><span class="p">;</span> <span class="c1"># prints &quot;one\ntwo\n&quot;</span>
+</code></pre></div>
+<h3>捕获变量 <code>$1</code> 及之友</h3>
+
+<p>捕获括号对的内容被存储到数字变量中。括号从左到右分配：</p>
+<div class="highlight"><pre><code class="language-perl" data-lang="perl"><span class="k">my</span> <span class="nv">$str</span> <span class="o">=</span> <span class="s">&quot;abc&quot;</span><span class="p">;</span>
+<span class="nv">$str</span> <span class="o">=~</span><span class="sr"> /(((a)(b))(c))/</span><span class="p">;</span>
+<span class="k">print</span> <span class="s">&quot;1: $1 2: $2 3: $3 4: $4 5: $5\n&quot;</span><span class="p">;</span>
+<span class="c1"># prints: 1: abc 2: ab 3: a 4: b 5: c</span>
+</code></pre></div>
+<p>捕获括号及变量的数目没有上限。</p>
+
+<h3>利用 <code>?:</code> 避免捕获</h3>
+
+<p>如果括号后紧接着 <code>?:</code>，那么该分组不会被捕获。在你不想保存匹配的内容时
+会有用：</p>
+<div class="highlight"><pre><code class="language-perl" data-lang="perl"><span class="k">my</span> <span class="nv">$str</span> <span class="o">=</span> <span class="s">&quot;abc&quot;</span><span class="p">;</span>
+<span class="nv">$str</span> <span class="o">=~</span><span class="sr"> /(?:a(b)c)/</span><span class="p">;</span>
+<span class="k">print</span> <span class="s">&quot;$1\n&quot;</span><span class="p">;</span> <span class="c1"># prints &quot;b&quot;</span>
+</code></pre></div>
+<h3>利用 <code>/x</code> 选项使正则表达式更易读</h3>
+
+<p>如果你在使用正则表达式时玩了些花样，那么为它写注释。你可以使用 <code>/x</code>
+选项达到目的。</p>
+
+<p>丑陋的庞然大物：</p>
+<div class="highlight"><pre><code class="language-perl" data-lang="perl"><span class="k">my</span> <span class="p">(</span><span class="nv">$num</span><span class="p">)</span> <span class="o">=</span> <span class="nv">$ARGV</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">=~</span> <span class="sr">m/^\+?((?:(?&lt;!\+)-)?(?:\d*.)?\d+)$/x</span><span class="p">;</span>
+</code></pre></div>
+<p>使用 <code>/x</code> 允许的空白和注释更可读：</p>
+<div class="highlight"><pre><code class="language-perl" data-lang="perl"><span class="k">my</span> <span class="p">(</span><span class="nv">$num</span><span class="p">)</span> <span class="o">=</span>
+    <span class="nv">$ARGV</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">=~</span> <span class="sr">m/^ \+?        # An optional plus sign, to be discarded</span>
+<span class="sr">                (              # Capture...</span>
+<span class="sr">                (?:(?&lt;!\+)-)?  # a negative sign, if there&#39;s no plus behind it,</span>
+<span class="sr">                (?:\d*.)?      # an optional number, followed by a point if a decimal,</span>
+<span class="sr">                \d+            # then any number of numbers.</span>
+<span class="sr">                )$/x</span><span class="p">;</span>
+</code></pre></div>
+<p>除非被转义，空白和注释将被去除。</p>
+
+<h3>利用 <code>\Q</code> 和 <code>\E</code> 自动引起正则表达式</h3>
+
+<p>这会自动转义正则表达式的元字符。不会转义 <code>$</code> 符号。</p>
+<div class="highlight"><pre><code class="language-perl" data-lang="perl"><span class="k">my</span> <span class="nv">$num</span> <span class="o">=</span> <span class="s">&#39;3.1415&#39;</span><span class="p">;</span>
+<span class="k">print</span> <span class="s">&quot;ok 1\n&quot;</span> <span class="k">if</span> <span class="nv">$num</span> <span class="o">=~</span><span class="sr"> /\Q3.14\E/</span><span class="p">;</span>
+<span class="nv">$num</span> <span class="o">=</span> <span class="s">&#39;3X1415&#39;</span><span class="p">;</span>
+<span class="k">print</span> <span class="s">&quot;ok 2\n&quot;</span> <span class="k">if</span> <span class="nv">$num</span> <span class="o">=~</span><span class="sr"> /\Q3.14\E/</span><span class="p">;</span>
+<span class="k">print</span> <span class="s">&quot;ok 3\n&quot;</span> <span class="k">if</span> <span class="nv">$num</span> <span class="o">=~</span><span class="sr"> /3.14/</span><span class="p">;</span>
+</code></pre></div>
+<p>输出：</p>
+<div class="highlight"><pre><code class="language-perl" data-lang="perl"><span class="n">ok</span> <span class="mi">1</span>
+<span class="n">ok</span> <span class="mi">3</span>
+</code></pre></div>
+<h3>对 <code>s///</code> 使用 <code>/e</code> 选项来执行代码</h3>
+
+<p>这将允许任意代码替换正则表达式中的字符串。</p>
+<div class="highlight"><pre><code class="language-perl" data-lang="perl"><span class="k">my</span> <span class="nv">$str</span> <span class="o">=</span> <span class="s">&quot;AbCdE\n&quot;</span><span class="p">;</span>
+<span class="nv">$str</span> <span class="o">=~</span> <span class="sr">s/(\w)/lc $1/eg</span><span class="p">;</span>
+<span class="k">print</span> <span class="nv">$str</span><span class="p">;</span> <span class="c1"># prints &quot;abcde&quot;</span>
+</code></pre></div>
+<p>必要时使用 <code>$1</code> 及之友。</p>
+
+<h3>了解何时使用 <code>study</code></h3>
+
+<p><code>study</code> 在多数情况下都无用。它所做的是创建一个每个单字节字符首次出现在字符串中
+的位置的表。这意味着如果你有 1,000 个字符长的字符串，你要寻找由一个常量字符开头
+的各种字符串，匹配器可以立即跳转到正确的位置。例如：</p>
+<div class="highlight"><pre><code class="language-text" data-lang="text">&quot;This is a very long [... 900 characters skipped...] string that I have here,
+ending at position 1000&quot;
+</code></pre></div>
+<p>现在，如果你要匹配正则表达式 <code>/Icky/</code>，匹配器将试图寻找第一个匹配的字母 <code>I</code>。在
+找到它之前得扫描前面的 900+ 个字符。但 <code>study</code> 创建了一个 256 个字节第一次出现
+的地方的表。所以扫描器能够立即跳转到那个位置来开始匹配。</p>
+
+<p>译注：这里没有考虑到多字节字符。</p>
+
+<h3>使用 <code>re =&gt; debug</code> 调试正则表达式</h3>
+<div class="highlight"><pre><code class="language-perl" data-lang="perl"><span class="o">-</span><span class="n">Mre</span><span class="o">=</span><span class="n">debug</span>
+</code></pre></div>
+
+<div id="post-nav" class="clearfix">
+  
+  <a rel="prev" href="/hashes.html">&larr;哈希</a>
+  
+  
+  <a rel="next" href="/flow-control.html" style="float:right;">流程控制&rarr;</a>
+  
+</div>
+
+            </div>
+            <div id="footer">
+                follow me: <a href="https://twitter.com/xuxiaodong">twitter</a> / <a href="https://github.com/xuxiaodong">github</a> / <a href="http://www.linkedin.com/pub/xiaodong-xu/62/319/7">linkedin</a>
+            </div>
+        </div>
+    </body>
+</html>

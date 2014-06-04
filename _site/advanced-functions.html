@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        
+        <title>Perl 程序员应该知道的事: 高级函数</title>
+        
+        <link rel="stylesheet" href="//ty.yukir.net/ty.css">
+        <link rel="stylesheet" type="text/css" href="css/syntax.css">
+        <link rel="stylesheet" type="text/css" href="css/hgtip/style.css">
+    </head>
+    <body>
+        <div id="main-wrap" class="ty ty-wide">
+            <div id="header">
+                <h1><a href="" title="Perl 程序员应该知道的事">Perl 程序员应该知道的事</a></h1>
+            </div>
+            <div id="content">
+                
+<h2><a href="http://perl101.org/advanced-functions.html" title="External link">高级函数</a></h2>
+
+<p id="tip-info">October 28, 2013 @ 04:12 PM</p>
+<h3>上下文与 wantarray</h3>
+
+<p>Perl 有三种上下文：空、标量、以及列表。</p>
+<div class="highlight"><pre><code class="language-perl" data-lang="perl">            <span class="n">func</span><span class="p">();</span> <span class="c1"># void</span>
+<span class="k">my</span> <span class="nv">$ret</span>   <span class="o">=</span> <span class="n">func</span><span class="p">();</span> <span class="c1"># scalar</span>
+<span class="k">my</span> <span class="p">(</span><span class="nv">$ret</span><span class="p">)</span> <span class="o">=</span> <span class="n">func</span><span class="p">();</span> <span class="c1"># list</span>
+<span class="k">my</span> <span class="nv">@ret</span>   <span class="o">=</span> <span class="n">func</span><span class="p">();</span> <span class="c1"># list</span>
+</code></pre></div>
+<p>如果你在子例程或 <code>eval</code> 块中，你能够使用 <code>wantarray</code> 来决定想要的上下文。</p>
+
+<p>以下是处理正则表达式返回值的上下文例子：</p>
+<div class="highlight"><pre><code class="language-perl" data-lang="perl"><span class="k">my</span> <span class="nv">$str</span> <span class="o">=</span> <span class="s">&#39;Perl 101 Perl Context Demo&#39;</span><span class="p">;</span>
+<span class="k">my</span> <span class="nv">@ret</span> <span class="o">=</span> <span class="nv">$str</span> <span class="o">=~</span><span class="sr"> /Perl/g</span><span class="p">;</span> <span class="c1"># @ret = (&#39;Perl&#39;,&#39;Perl&#39;);</span>
+<span class="k">my</span> <span class="nv">$ret</span> <span class="o">=</span> <span class="nv">$str</span> <span class="o">=~</span><span class="sr"> /Perl/g</span><span class="p">;</span> <span class="c1"># $ret is true</span>
+</code></pre></div>
+<h3>.. 和 ...</h3>
+
+<p>这些叫区间操作符，它们能够帮助代码处理整数或字符区间。</p>
+
+<p>在下例中，<code>@array</code> 是手动填充的。这些是等价的：</p>
+<div class="highlight"><pre><code class="language-perl" data-lang="perl"><span class="k">my</span> <span class="nv">@array</span> <span class="o">=</span> <span class="p">(</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">5</span> <span class="p">);</span>
+<span class="k">my</span> <span class="nv">@array</span> <span class="o">=</span> <span class="mi">0</span><span class="o">..</span><span class="mi">5</span><span class="p">;</span>
+</code></pre></div>
+<p>当用于此种方式时，<code>..</code> 和 <code>...</code> 是等效的。</p>
+
+<p>区间操作符只能增加。这会产生一个空列表：</p>
+<div class="highlight"><pre><code class="language-perl" data-lang="perl"><span class="k">my</span> <span class="nv">@array</span> <span class="o">=</span> <span class="mi">10</span><span class="o">..</span><span class="mi">1</span><span class="p">;</span> <span class="c1"># @array is empty</span>
+</code></pre></div>
+<p>如果你想要逆向，要求它。</p>
+<div class="highlight"><pre><code class="language-perl" data-lang="perl"><span class="k">my</span> <span class="nv">@array</span> <span class="o">=</span> <span class="nb">reverse</span> <span class="mi">1</span><span class="o">..</span><span class="mi">10</span><span class="p">;</span> <span class="c1"># @array descends from 10 to 1</span>
+</code></pre></div>
+<p>你也可以在标量上下文中使用区间操作符，但那超出了本节的范围。参阅手册页
+了解细节。</p>
+
+
+<div id="post-nav" class="clearfix">
+  
+  <a rel="prev" href="/command-line-switches.html">&larr;命令行选项</a>
+  
+  
+  <a rel="next" href="/style.html" style="float:right;">风格&rarr;</a>
+  
+</div>
+
+            </div>
+            <div id="footer">
+                follow me: <a href="https://twitter.com/xuxiaodong">twitter</a> / <a href="https://github.com/xuxiaodong">github</a> / <a href="http://www.linkedin.com/pub/xiaodong-xu/62/319/7">linkedin</a>
+            </div>
+        </div>
+    </body>
+</html>

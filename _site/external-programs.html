@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        
+        <title>Perl 程序员应该知道的事: 外部程序</title>
+        
+        <link rel="stylesheet" href="//ty.yukir.net/ty.css">
+        <link rel="stylesheet" type="text/css" href="css/syntax.css">
+        <link rel="stylesheet" type="text/css" href="css/hgtip/style.css">
+    </head>
+    <body>
+        <div id="main-wrap" class="ty ty-wide">
+            <div id="header">
+                <h1><a href="" title="Perl 程序员应该知道的事">Perl 程序员应该知道的事</a></h1>
+            </div>
+            <div id="content">
+                
+<h2><a href="http://perl101.org/external-programs.html" title="External link">外部程序</a></h2>
+
+<p id="tip-info">October 28, 2013 @ 10:30 AM</p>
+<p>在 Perl 中有三种方式来调用外部程序。</p>
+
+<h3><code>system()</code> 返回程序的退出状态</h3>
+<div class="highlight"><pre><code class="language-perl" data-lang="perl"><span class="k">my</span> <span class="nv">$rc</span> <span class="o">=</span> <span class="nb">system</span><span class="p">(</span><span class="s">&quot;/bin/cp $file1 $file2&quot;</span><span class="p">);</span> <span class="c1"># returns exit status values</span>
+<span class="nb">die</span> <span class="s">&quot;system() failed with status $rc&quot;</span> <span class="k">unless</span> <span class="nv">$rc</span> <span class="o">==</span> <span class="mi">0</span><span class="p">;</span>
+</code></pre></div>
+<p>如果可能，用列表传递你的参数，而不是用单个的字符串。</p>
+<div class="highlight"><pre><code class="language-perl" data-lang="perl"><span class="k">my</span> <span class="nv">$rc</span> <span class="o">=</span> <span class="nb">system</span><span class="p">(</span><span class="s">&quot;/bin/cp&quot;</span><span class="p">,</span> <span class="nv">$file1</span><span class="p">,</span> <span class="nv">$file2</span> <span class="p">);</span>
+</code></pre></div>
+<p>如果 <code>$file1</code> 或 <code>$file2</code> 有空格或其他特殊字符，这将确保不会在 Shell
+中出错。</p>
+
+<p><code>system()</code> 的输出不会被捕获。</p>
+
+<h3>反引号（``）和 <code>qx()</code> 操作符返回程序的输出</h3>
+
+<p>当你想要输出时，使用：</p>
+<div class="highlight"><pre><code class="language-perl" data-lang="perl"><span class="k">my</span> <span class="nv">$output</span> <span class="o">=</span> <span class="sb">`myprogram foo bar`</span><span class="p">;</span>
+</code></pre></div>
+<p>你将需要检查 <code>$!</code> 中的错误代码。</p>
+
+<p>如果你使用反引号或 <code>qx()</code>，首选 <em>IPC::Open2</em> 或 <em>IPC::Open3</em> 代替，因为
+它们将给你相同的参数控制，并允许你捕获输出。</p>
+
+<p><code>IPC::Open3</code> 是在 Perl 中不使用 Shell 命令来捕获 <code>STDERR</code> 的仅有方法。</p>
+
+
+<div id="post-nav" class="clearfix">
+  
+  <a rel="prev" href="/modules.html">&larr;模块</a>
+  
+  
+  <a rel="next" href="/cpan.html" style="float:right;">CPAN&rarr;</a>
+  
+</div>
+
+            </div>
+            <div id="footer">
+                follow me: <a href="https://twitter.com/xuxiaodong">twitter</a> / <a href="https://github.com/xuxiaodong">github</a> / <a href="http://www.linkedin.com/pub/xiaodong-xu/62/319/7">linkedin</a>
+            </div>
+        </div>
+    </body>
+</html>

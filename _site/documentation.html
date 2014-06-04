@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        
+        <title>Perl 程序员应该知道的事: 文档</title>
+        
+        <link rel="stylesheet" href="//ty.yukir.net/ty.css">
+        <link rel="stylesheet" type="text/css" href="css/syntax.css">
+        <link rel="stylesheet" type="text/css" href="css/hgtip/style.css">
+    </head>
+    <body>
+        <div id="main-wrap" class="ty ty-wide">
+            <div id="header">
+                <h1><a href="" title="Perl 程序员应该知道的事">Perl 程序员应该知道的事</a></h1>
+            </div>
+            <div id="content">
+                
+<h2><a href="http://perl101.org/documentation.html" title="External link">文档</a></h2>
+
+<p id="tip-info">October 25, 2013 @ 11:18 AM</p>
+<h3>perldoc</h3>
+
+<p><code>perldoc</code> 是 Perl 完整的语言参考工具。</p>
+
+<ul>
+<li><code>perldoc perldoc</code>：用法介绍</li>
+<li><code>perldoc perl</code>：文档概述</li>
+<li><code>perldoc Module</code>：模块文档</li>
+</ul>
+
+<h3>利用 <code>perldoc -f</code> 查阅 Perl 函数</h3>
+<div class="highlight"><pre><code class="language-text" data-lang="text">$ perldoc -f system
+
+system LIST
+system PROGRAM LIST
+        Does exactly the same thing as &quot;exec LIST&quot;, except that a fork
+        is done first and the parent process waits for the child
+...
+</code></pre></div>
+<h3>利用 <code>perldoc -v</code> 查阅 Perl 变量</h3>
+<div class="highlight"><pre><code class="language-text" data-lang="text">$ perldoc -v &#39;$/&#39;
+
+IO::Handle-&gt;input_record_separator( EXPR )
+$INPUT_RECORD_SEPARATOR
+$RS
+$/      The input record separator, newline by default.  This
+...
+</code></pre></div>
+<h3>利用 <code>perldoc -q</code> 搜索 Perl FAQ</h3>
+<div class="highlight"><pre><code class="language-text" data-lang="text">$ perldoc -q database
+
+Found in /usr/share/perl/5.18/pod/perlfaq8.pod
+How do I use an SQL database?
+
+    The DBI module provides an abstract interface to most database servers
+    and types, including Oracle, DB2, Sybase, mysql, Postgresql, ODBC, and
+...
+</code></pre></div>
+<h3>利用 <code>perldoc modulename</code> 查阅 Perl 模块文档</h3>
+
+<p>如果模块已经安装到你的系统中，那么你可以通过 <code>perldoc</code> 阅读该模块的文档。</p>
+<div class="highlight"><pre><code class="language-text" data-lang="text">$ perldoc WWW::Mechanize
+
+NAME
+    WWW::Mechanize - Handy web browsing in a Perl object
+
+VERSION
+    Version 1.73
+
+SYNOPSIS
+    &quot;WWW::Mechanize&quot;, or Mech for short, is a Perl module for stateful
+    programmatic web browsing, used for automating interaction with
+    websites.
+...
+</code></pre></div>
+<p>对于没有安装的模块，你将需要使用 <a href="http://search.cpan.org">http://search.cpan.org</a> 或 <code>cpandoc</code>。</p>
+
+<h3>利用 <code>cpandoc</code> 查阅未安装 Perl 模块的文档</h3>
+
+<p><em>Pod::Cpandoc</em> 模块提供了 <code>cpandoc</code> 工具，利用该工具，即便模块没有安装到
+系统上，但你仍然能够查阅该模块的文档。</p>
+<div class="highlight"><pre><code class="language-text" data-lang="text">$ cpandoc Web::Scraper
+
+NAME
+    Web::Scraper - Web Scraping Toolkit using HTML and CSS Selectors or
+    XPath expressions
+
+SYNOPSIS
+    use URI;
+    use Web::Scraper;
+...
+</code></pre></div>
+<h3>在线文档</h3>
+
+<p>一些网站维护有 Perl 的 HTML 文档，最大的两个站点是：</p>
+
+<ol>
+<li><a href="http://perldoc.perl.org">http://perldoc.perl.org</a>：语言、函数及标准库</li>
+<li><a href="http://search.cpan.org">http://search.cpan.org</a>：模块</li>
+</ol>
+
+<h3>编写自己的文档</h3>
+
+<p>Perl 具有浓烈的文档文化，我们鼓励你早日养成此习惯。你将使用一种叫做 POD
+的格式来编写文档。</p>
+
+
+<div id="post-nav" class="clearfix">
+  
+  <a rel="prev" href="/terms.html">&larr;术语</a>
+  
+  
+  <a rel="next" href="/strings.html" style="float:right;">字符串&rarr;</a>
+  
+</div>
+
+            </div>
+            <div id="footer">
+                follow me: <a href="https://twitter.com/xuxiaodong">twitter</a> / <a href="https://github.com/xuxiaodong">github</a> / <a href="http://www.linkedin.com/pub/xiaodong-xu/62/319/7">linkedin</a>
+            </div>
+        </div>
+    </body>
+</html>

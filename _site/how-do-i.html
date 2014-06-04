@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        
+        <title>Perl 程序员应该知道的事: 如何做...？</title>
+        
+        <link rel="stylesheet" href="//ty.yukir.net/ty.css">
+        <link rel="stylesheet" type="text/css" href="css/syntax.css">
+        <link rel="stylesheet" type="text/css" href="css/hgtip/style.css">
+    </head>
+    <body>
+        <div id="main-wrap" class="ty ty-wide">
+            <div id="header">
+                <h1><a href="" title="Perl 程序员应该知道的事">Perl 程序员应该知道的事</a></h1>
+            </div>
+            <div id="content">
+                
+<h2><a href="http://perl101.org/how-do-i.html" title="External link">如何做...？</a></h2>
+
+<p id="tip-info">October 29, 2013 @ 09:58 AM</p>
+<h3>如何验证 Email 地址是否有效</h3>
+
+<p>一般来说，你不能。有一些看起来合理的方法可以使用，但却没有办法检测地址
+是否实际可以投递，如果没有实际尝试投递的话。</p>
+
+<p>使用正则表达式：</p>
+<div class="highlight"><pre><code class="language-perl" data-lang="perl"><span class="c1"># Match basically blah@blah.blah</span>
+<span class="k">if</span> <span class="p">(</span> <span class="nv">$addr</span> <span class="o">=~</span><span class="sr"> /^\S+\@\S+\.\S+$/</span> <span class="p">)</span> <span class="p">{</span>
+    <span class="k">print</span> <span class="s">&quot;Looks OK&quot;</span><span class="p">;</span>
+<span class="p">}</span>
+</code></pre></div>
+<p>如果你干真活的话，可能希望看看 CPAN 上可用的模块，比如：<em>Email::Address</em>、
+<em>Email::Valid</em>。</p>
+
+<h3>如何从数据库获得数据</h3>
+
+<p><em>DBI</em> 及其 <em>DBD</em> 子模块，如 <em>DBD::SQLite</em>。</p>
+
+<h3>如何从网页获得数据</h3>
+
+<p><em>LWP</em> 意为 <em>libwww-perl</em>，它是与网页交谈的标准方式。</p>
+
+<p><em>WWW::Mechanize</em> 是使 HTML 处理更容易的 <em>LWP</em> 的超集。</p>
+
+<h3>如何做日期计算</h3>
+
+<p>使用 <em>Date::Manip</em>、<em>Date::Calc</em>、或 <em>DateTime</em>。全部都有不同的样式和
+不同的能力。</p>
+
+<h3>如何处理程序的命令行参数</h3>
+
+<p>使用 <em>Getopt::Long</em>。</p>
+
+<h3>如何解析 HTML</h3>
+
+<p>无论你做什么，都不要使用正则表达式。使用 <em>HTML::Parse</em> 或别的类似东东。
+如果你解析 HTML 是为了从网页提取链接或图像，不妨使用 <em>WWW::Mechanize</em>。</p>
+
+<h3>如何来点颜色</h3>
+
+<p>使用 <em>Term::ANSIColor</em>。</p>
+
+<h3>如何读取键及不看到输入的密码</h3>
+
+<p>使用 <em>Term::ReadKey</em>。</p>
+
+
+<div id="post-nav" class="clearfix">
+  
+  <a rel="prev" href="/traps.html">&larr;陷阱</a>
+  
+  
+  <a rel="next" href="/developer-tools.html" style="float:right;">开发工具&rarr;</a>
+  
+</div>
+
+            </div>
+            <div id="footer">
+                follow me: <a href="https://twitter.com/xuxiaodong">twitter</a> / <a href="https://github.com/xuxiaodong">github</a> / <a href="http://www.linkedin.com/pub/xiaodong-xu/62/319/7">linkedin</a>
+            </div>
+        </div>
+    </body>
+</html>

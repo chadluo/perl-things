@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        
+        <title>Perl 程序员应该知道的事: 哈希</title>
+        
+        <link rel="stylesheet" href="//ty.yukir.net/ty.css">
+        <link rel="stylesheet" type="text/css" href="css/syntax.css">
+        <link rel="stylesheet" type="text/css" href="css/hgtip/style.css">
+    </head>
+    <body>
+        <div id="main-wrap" class="ty ty-wide">
+            <div id="header">
+                <h1><a href="" title="Perl 程序员应该知道的事">Perl 程序员应该知道的事</a></h1>
+            </div>
+            <div id="content">
+                
+<h2><a href="http://perl101.org/hashes.html" title="External link">哈希</a></h2>
+
+<p id="tip-info">October 25, 2013 @ 04:52 PM</p>
+<h3>哈希是键/值对</h3>
+
+<p>如果你想按名字查询，那么需要哈希。哈希的键必须唯一，但值可以是任意标量。</p>
+
+<p>有时候你仍然会看到人们称它为“关联数组”，但不要想当然的把它作为数组。</p>
+
+<h3>通过键/值对列表来创建哈希</h3>
+
+<p>使用键/值对列表创建哈希：</p>
+<div class="highlight"><pre><code class="language-perl" data-lang="perl"><span class="k">my</span> <span class="nv">%stooges</span> <span class="o">=</span> <span class="p">(</span>
+    <span class="s">&#39;Moe&#39;</span><span class="p">,</span> <span class="s">&#39;Howard&#39;</span><span class="p">,</span>
+    <span class="s">&#39;Larry&#39;</span><span class="p">,</span> <span class="s">&#39;Fine&#39;</span><span class="p">,</span>
+    <span class="s">&#39;Curly&#39;</span><span class="p">,</span> <span class="s">&#39;Howard&#39;</span><span class="p">,</span>
+    <span class="s">&#39;Iggy&#39;</span><span class="p">,</span> <span class="s">&#39;Pop&#39;</span><span class="p">,</span>
+<span class="p">);</span>
+</code></pre></div>
+<p><code>=&gt;</code> 称为胖逗号，它与逗号相同，前面的单词加上引号：</p>
+<div class="highlight"><pre><code class="language-perl" data-lang="perl"><span class="k">my</span> <span class="nv">%stooges</span> <span class="o">=</span> <span class="p">(</span>
+    <span class="n">Moe</span>   <span class="o">=&gt;</span> <span class="s">&#39;Howard&#39;</span><span class="p">,</span>
+    <span class="n">Larry</span> <span class="o">=&gt;</span> <span class="s">&#39;Fine&#39;</span><span class="p">,</span>
+    <span class="n">Curly</span> <span class="o">=&gt;</span> <span class="s">&#39;Howard&#39;</span><span class="p">,</span>
+    <span class="n">Iggy</span>  <span class="o">=&gt;</span> <span class="s">&#39;Pop&#39;</span><span class="p">,</span>
+<span class="p">);</span>
+</code></pre></div>
+<p>哈希在列表环境中变成键/值对列表。</p>
+<div class="highlight"><pre><code class="language-perl" data-lang="perl"><span class="k">my</span> <span class="nv">@hash_as_an_array</span> <span class="o">=</span> <span class="nv">%stooges</span><span class="p">;</span>
+<span class="c1"># Contains ( &#39;Curly&#39;, &#39;Haward&#39;, &#39;Larry&#39;, &#39;Fine&#39;, etc... )</span>
+</code></pre></div>
+<p>正如哈希的键和值顺序事实上随机的一样，平展开的哈希键/值顺序也是随机的。</p>
+
+<h3>利用花括号访问独立的哈希条目</h3>
+
+<p>利用花括号代替中括号来获取哈希的值。</p>
+<div class="highlight"><pre><code class="language-perl" data-lang="perl"><span class="k">print</span> <span class="nv">$stooges</span><span class="p">{</span><span class="s">&#39;Iggy&#39;</span><span class="p">};</span>
+<span class="c1"># Prints &quot;Pop&quot;</span>
+</code></pre></div>
+<p>用同样的方式设置值：</p>
+<div class="highlight"><pre><code class="language-perl" data-lang="perl"><span class="nv">$stooges</span><span class="p">{</span><span class="s">&#39;Shemp&#39;</span><span class="p">}</span> <span class="o">=</span> <span class="s">&#39;Howard&#39;</span><span class="p">;</span>
+</code></pre></div>
+<p>覆盖现有的值：</p>
+<div class="highlight"><pre><code class="language-perl" data-lang="perl"><span class="nv">$stooges</span><span class="p">{</span><span class="s">&#39;Iggy&#39;</span><span class="p">}</span> <span class="o">=</span> <span class="s">&#39;Ignatowski&#39;</span><span class="p">;</span>
+</code></pre></div>
+<p>从哈希中删除条目：</p>
+<div class="highlight"><pre><code class="language-perl" data-lang="perl"><span class="nb">delete</span> <span class="nv">$stooges</span><span class="p">{</span><span class="s">&#39;Curly&#39;</span><span class="p">};</span>
+</code></pre></div>
+<p>注意：<code>delete</code> 不会删除文件。<code>unlink</code> 才会。</p>
+<div class="highlight"><pre><code class="language-perl" data-lang="perl"><span class="nb">unlink</span> <span class="nv">$stooges</span><span class="p">{</span><span class="s">&#39;Moe&#39;</span><span class="p">};</span>
+<span class="c1"># Deletes a file called &#39;Howard&#39;;</span>
+</code></pre></div>
+<h3>获取哈希的键/值</h3>
+
+<p>使用 <code>keys</code> 和 <code>values</code> 关键字：</p>
+<div class="highlight"><pre><code class="language-perl" data-lang="perl"><span class="k">my</span> <span class="nv">@stooge_first_names</span> <span class="o">=</span> <span class="nb">keys</span> <span class="nv">%stooges</span><span class="p">;</span>
+
+<span class="k">my</span> <span class="nv">@stooge_last_names</span>  <span class="o">=</span> <span class="nb">values</span> <span class="nv">%stooges</span><span class="p">;</span>
+</code></pre></div>
+<p>这会保证键和值的顺序相匹配。</p>
+
+<h3>哈希键自引用单词</h3>
+
+<p>如果你的哈希键是单个词，那么你不需要引用它。</p>
+<div class="highlight"><pre><code class="language-perl" data-lang="perl"><span class="nv">$stooges</span><span class="p">{</span><span class="n">Curly</span><span class="p">}</span> <span class="o">=</span> <span class="s">&#39;Howard&#39;</span><span class="p">;</span>
+</code></pre></div>
+<h3>哈希只能包含标量</h3>
+
+<p>在 Perl 哈希中的值只能是标量。它不能包含数组或数组中的列表。</p>
+<div class="highlight"><pre><code class="language-perl" data-lang="perl"><span class="nv">$hash</span><span class="p">{</span><span class="n">comedians</span><span class="p">}</span> <span class="o">=</span> <span class="nv">@stooges</span><span class="p">;</span>
+<span class="c1"># Assigns the length of @stooges to the value</span>
+</code></pre></div>
+<p>如果你想要在哈希中存储数组，你将需要使用引用。</p>
+
+<h3>哈希是无序的</h3>
+
+<p><code>keys %hash</code> 和 <code>values %hash</code> 的顺序实事上是随机的。每次执行程序都将不同。
+它也与添加时的顺序不相关。</p>
+
+<p>如果你想保留哈希元素添加时的顺序，那么可以使用 <a href="https://metacpan.org/module/Tie::IxHash">Tie::IxHash</a> 模块。</p>
+
+<h3>你无法排序哈希</h3>
+
+<p>在 Perl 中排序哈希的想法不存在，因为哈希是无序的。你可以排序哈希的键，
+或哈希的值，它们只是列表而已。</p>
+
+<h3>使用列表赋值合并哈希</h3>
+
+<p>要合并两个哈希，将它们看作列表，并赋给哈希。</p>
+<div class="highlight"><pre><code class="language-perl" data-lang="perl"><span class="k">my</span> <span class="nv">%new_hash</span> <span class="o">=</span> <span class="p">(</span><span class="nv">%hash1</span><span class="p">,</span> <span class="nv">%hash2</span><span class="p">);</span>
+</code></pre></div>
+<p>等号右边是来自两个哈希的键/值对长列表。然后将该列表赋给 <code>%new_hash</code>。
+如果在 <code>%hash2</code> 中的任意键与 <code>%hash1</code> 中的键重复，那么 <code>%hash2</code> 中的键/值
+对具有更高的优先级，因为它们赋值更晚。</p>
+
+<h3>何时使用哈希，何时使用数组</h3>
+
+<p>如果你做线性、有序的序列，那么使用数组。</p>
+
+<ul>
+<li>要读取的文件列表</li>
+<li>队列中的人列表</li>
+</ul>
+
+<p>如果你做想要查询的无序的事，那么使用哈希。</p>
+
+<ul>
+<li>姓索引，通过名字查询</li>
+<li>显示文件大小的索引，按名称查询</li>
+</ul>
+
+<h3><code>defined</code> 与 <code>exists</code> 的差异</h3>
+
+<p>使用 <code>defined</code> 来看哈希元素是否有 <code>undef</code> 之外的值。如果哈希元素有任意 <code>undef</code>
+之外的值，甚至求值为假的 0 和 &quot;&quot;(空字符串)，都将返回真。</p>
+
+<p>使用 <code>exists</code> 来看哈希元素是否已被初始化，即便它没有被定义（如，它有值
+<code>undef</code>）。</p>
+<div class="highlight"><pre><code class="language-perl" data-lang="perl"><span class="k">my</span> <span class="nv">%h</span><span class="p">;</span>
+<span class="nv">$h</span><span class="p">{</span><span class="s">&#39;foo&#39;</span><span class="p">}</span> <span class="o">=</span> <span class="nb">undef</span><span class="p">;</span>
+
+<span class="nb">defined</span> <span class="nv">$h</span><span class="p">{</span><span class="s">&#39;foo&#39;</span><span class="p">}</span> <span class="p">?</span> <span class="k">print</span> <span class="mi">1</span> <span class="p">:</span> <span class="k">print</span> <span class="mi">0</span><span class="p">;</span>
+<span class="c1"># $h{&#39;foo&#39;} is not defined, so it prints 0</span>
+<span class="nb">exists</span> <span class="nv">$h</span><span class="p">{</span><span class="s">&#39;foo&#39;</span><span class="p">}</span> <span class="p">?</span> <span class="k">print</span> <span class="mi">1</span> <span class="p">:</span> <span class="k">print</span> <span class="mi">0</span><span class="p">;</span>
+<span class="c1"># but it has been initialized nonetheless, and so this line prints 1</span>
+</code></pre></div>
+<p>哈希元素仅被定义后才为真。它仅在存在后才能被定义。</p>
+
+<p>然而，哈希元素未被定义仍能存在。这意味着即便它存在，也不会返回真。</p>
+<div class="highlight"><pre><code class="language-perl" data-lang="perl"><span class="k">if</span> <span class="p">(</span> <span class="nv">$h</span><span class="p">{</span><span class="s">&#39;foo&#39;</span><span class="p">}</span> <span class="p">)</span> <span class="p">{</span>
+    <span class="k">print</span> <span class="s">&#39;true&#39;</span><span class="p">;</span>
+<span class="p">}</span>
+<span class="k">else</span> <span class="p">{</span>
+    <span class="k">print</span> <span class="s">&#39;false&#39;</span><span class="p">;</span>
+<span class="p">}</span>
+<span class="c1"># prints &#39;false&#39;; since $h{&#39;foo&#39;} is not defined, it cannot be true</span>
+</code></pre></div>
+
+<div id="post-nav" class="clearfix">
+  
+  <a rel="prev" href="/arrays.html">&larr;数组</a>
+  
+  
+  <a rel="next" href="/regexes.html" style="float:right;">正则表达式&rarr;</a>
+  
+</div>
+
+            </div>
+            <div id="footer">
+                follow me: <a href="https://twitter.com/xuxiaodong">twitter</a> / <a href="https://github.com/xuxiaodong">github</a> / <a href="http://www.linkedin.com/pub/xiaodong-xu/62/319/7">linkedin</a>
+            </div>
+        </div>
+    </body>
+</html>
